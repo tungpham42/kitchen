@@ -32,8 +32,8 @@ export function getCategoryMeta(category?: string) {
   const description = `Explore ${label.toLowerCase()} recipes with the traditional flavors of Vietnam at ${SITE_NAME}.`;
   return {
     isDefault: false as const,
-    pageTitle: `Recipes ${label}`, // goes through the layout title template
-    fullTitle: `Recipes ${label} | ${SITE_NAME}`,
+    pageTitle: `${label} Recipes`, // goes through the layout title template
+    fullTitle: `${label} Recipes | ${SITE_NAME}`,
     description,
     ogDescription: description,
     ogImage: getCategoryOgImage(category),
