@@ -9,7 +9,7 @@ export const DEFAULT_DESCRIPTION =
 export const DEFAULT_OG_DESCRIPTION =
   "Preserving delicious dishes and stories around the Vietnamese family table.";
 
-export const RECIPE_PATH = "/recipe";
+export const RECIPE_PATH = "/recipes";
 
 export const DEFAULT_OG_IMAGE = "/1200x630.jpg";
 const CATEGORY_OG_EXT = "jpg"; // change to "jpg" if the images in public/category are .jpg
