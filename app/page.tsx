@@ -44,7 +44,7 @@ export default function HomePage() {
         <div className="absolute -bottom-20 -left-16 size-64 rounded-full border border-ivory/10 bg-ivory/5" />
         <div className="relative max-w-3xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-gold/35 bg-ivory/10 px-3 py-1 text-xs font-extrabold uppercase tracking-[0.18em] text-gold-light">
-            <Icon name="bowl" size={15} /> Vietnamese flavors
+            <Icon name="bowl" size={15} /> Home-cooked recipes, worldwide
           </span>
           <h1 className="mt-5 font-serif text-4xl font-bold leading-tight sm:text-6xl">
             Every dish is a family story.
@@ -53,12 +53,31 @@ export default function HomePage() {
             Discover recipes, find ideas for meals through the week, and share
             the delicious dishes tied to your kitchen.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link href="/meal-plans" className="btn-gold">
-              <Icon name="calendar" size={17} /> Plan the weekly menu
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
+            {/* Primary CTA: glowing gold pill with a light sweep on hover */}
+            <Link
+              href="/meal-plans"
+              className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full bg-gradient-to-b from-gold-light via-gold to-gold py-3.5 pl-7 pr-3.5 text-base font-extrabold text-lacquer shadow-[0_0_0_1px_rgba(255,255,255,0.35)_inset,0_10px_30px_-6px_rgba(240,190,80,0.65)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.5)_inset,0_16px_40px_-6px_rgba(240,190,80,0.85)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-gold-light/60 active:translate-y-0 active:scale-[0.98]"
+            >
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-white/50 blur-md motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:translate-x-[420%]"
+              />
+              <span className="relative">Plan the weekly menu</span>
+              <span className="relative grid size-9 place-items-center rounded-full bg-lacquer text-gold-light transition duration-300 group-hover:scale-110 group-hover:rotate-6">
+                <Icon name="calendar" size={18} />
+              </span>
             </Link>
-            <Link href="/recipes/new" className="btn-outline-dark">
-              <Icon name="plus" size={17} /> Share a home dish
+
+            {/* Secondary CTA: frosted outline that fills with ivory on hover */}
+            <Link
+              href="/recipes/new"
+              className="group relative inline-flex items-center justify-center gap-3 rounded-full border-2 border-ivory/60 bg-ivory/10 py-3.5 pl-7 pr-3.5 text-base font-extrabold text-ivory shadow-[0_8px_24px_-8px_rgba(0,0,0,0.45)] backdrop-blur-md transition duration-300 hover:-translate-y-0.5 hover:border-ivory hover:bg-ivory hover:text-lacquer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ivory/50 active:translate-y-0 active:scale-[0.98]"
+            >
+              <span>Share a home dish</span>
+              <span className="grid size-9 place-items-center rounded-full bg-gold text-lacquer transition duration-300 group-hover:rotate-90 group-hover:bg-lacquer group-hover:text-gold-light">
+                <Icon name="plus" size={18} />
+              </span>
             </Link>
           </div>
           <HeroShare />
