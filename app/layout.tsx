@@ -13,19 +13,19 @@ import { SITE_NAME } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE_NAME} — Món ăn & ký ức`,
+    default: `${SITE_NAME} — Dishes & memories`,
     template: `%s | ${SITE_NAME}`,
   },
-  description: `Nền tảng chia sẻ công thức và gợi ý món ăn mang hương vị truyền thống Việt Nam.`,
+  description: `A platform for sharing recipes and dish suggestions with the traditional flavors of Vietnam.`,
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   ),
   openGraph: {
     title: {
-      default: `${SITE_NAME} — Món ăn & ký ức`,
+      default: `${SITE_NAME} — Dishes & memories`,
       template: `%s | ${SITE_NAME}`,
     },
-    description: "Save giữ những món ngon và câu chuyện quanh mâm cơm Việt.",
+    description: "Preserving delicious dishes and stories around the Vietnamese family table.",
     type: "website",
     url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
     siteName: SITE_NAME,
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
         url: "/1200x630.jpg",
         width: 1200,
         height: 630,
-        alt: `${SITE_NAME} — Món ăn & ký ức`,
+        alt: `${SITE_NAME} — Dishes & memories`,
       },
     ],
   },

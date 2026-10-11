@@ -86,7 +86,7 @@ export type RecipePageData = {
   related: Recipe[];
 };
 
-const ANONYMOUS_AUTHOR = "Tác giả ẩn danh";
+const ANONYMOUS_AUTHOR = "Anonymous author";
 
 /**
  * Everything the recipe detail page needs, in ONE server round trip:

@@ -1,7 +1,7 @@
 const YOUTUBE_ID_PATTERN = /^[\w-]{11}$/;
 const THUMB_HOST = "https://i.ytimg.com/vi";
 
-/** Lấy video ID từ các dạng link YouTube phổ biến (watch, youtu.be, embed, shorts, live). */
+/** Extracts the video ID from common YouTube link formats (watch, youtu.be, embed, shorts, live). */
 export function extractYouTubeId(rawUrl?: string | null): string | null {
   const value = rawUrl?.trim();
   if (!value) return null;
@@ -32,7 +32,7 @@ export function youtubeEmbedUrl(rawUrl?: string | null): string | null {
   return id ? `https://www.youtube.com/embed/${id}` : null;
 }
 
-/** Ảnh bìa chất lượng cao nhất (có thể 404 với một số video) và ảnh dự phòng luôn tồn tại. */
+/** The highest-quality thumbnail (may 404 for some videos) and a fallback thumbnail that always exists. */
 export function youtubeThumbnailCandidates(rawUrl?: string | null): string[] {
   const id = extractYouTubeId(rawUrl);
   return id
@@ -40,14 +40,14 @@ export function youtubeThumbnailCandidates(rawUrl?: string | null): string[] {
     : [];
 }
 
-/** Dùng trong form: kiểm tra trước xem video có maxres không, nếu không thì dùng hqdefault. */
+/** Used in the form: first checks whether the video has a maxres thumbnail, otherwise falls back to hqdefault. */
 export function resolveYouTubeThumbnail(videoId: string): Promise<string> {
   const base = `${THUMB_HOST}/${videoId}`;
   const fallback = `${base}/hqdefault.jpg`;
   return new Promise((resolve) => {
     const img = new window.Image();
     img.onload = () =>
-      // YouTube trả ảnh placeholder 120x90 khi không có maxres
+      // YouTube returns a 120x90 placeholder image when there is no maxres
       resolve(img.naturalWidth > 120 ? `${base}/maxresdefault.jpg` : fallback);
     img.onerror = () => resolve(fallback);
     img.src = `${base}/maxresdefault.jpg`;

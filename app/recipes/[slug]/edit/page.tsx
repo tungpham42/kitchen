@@ -63,13 +63,13 @@ function buildKeywords(recipe: Recipe): string[] {
 
   return unique([
     recipe.title,
-    "chỉnh sửa công thức",
-    "công thức",
-    "công thức món ăn",
-    "nấu ăn",
-    "món ngon",
+    "edit recipe",
+    "recipe",
+    "dish recipe",
+    "cooking",
+    "delicious food",
     category,
-    category ? `công thức ${category}` : "",
+    category ? `${category} recipe` : "",
     ...recipe.ingredients.slice(0, 8),
   ]).slice(0, 15);
 }
@@ -94,8 +94,8 @@ export async function generateMetadata({
 
   if (!recipe) {
     return {
-      title: "Chỉnh sửa công thức",
-      description: `Trang chỉnh sửa công thức trong ${SITE_NAME}. Recipes không tồn tại hoặc đã được gỡ bỏ.`,
+      title: "Edit recipe",
+      description: `Recipe editing page on ${SITE_NAME}. The recipe does not exist or has been removed.`,
       applicationName: SITE_NAME,
       robots: noIndexRobots,
     };
@@ -105,11 +105,11 @@ export async function generateMetadata({
   const canonical = getRecipeUrl(recipe.slug);
   const imageUrl = resolveUrl(recipe.imageUrl, metadataBase);
   const category = categoryLabel(recipe.category);
-  const title = `Chỉnh sửa "${recipe.title}"`;
+  const title = `Edit "${recipe.title}"`;
   const description = truncate(
-    `Chỉnh sửa và cập nhật công thức "${recipe.title}"${
-      category ? `, thuộc nhóm ${category}` : ""
-    } trên ${SITE_NAME}.`,
+    `Edit and update the recipe "${recipe.title}"${
+      category ? `, in the ${category} category` : ""
+    } on ${SITE_NAME}.`,
     160,
   );
   const keywords = buildKeywords(recipe);
@@ -129,7 +129,7 @@ export async function generateMetadata({
     description,
     keywords,
     applicationName: SITE_NAME,
-    category: category || "Recipes món ăn",
+    category: category || "Dish recipes",
     alternates: {
       canonical,
     },
@@ -138,7 +138,7 @@ export async function generateMetadata({
       title,
       description,
       siteName: SITE_NAME,
-      locale: "vi_VN",
+      locale: "en_US",
       type: "website",
       ...(openGraphImages ? { images: openGraphImages } : {}),
     },

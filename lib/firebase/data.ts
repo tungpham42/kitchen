@@ -118,7 +118,7 @@ export async function createOrUpdateUser(
   user: User,
   extra: Record<string, unknown> = {},
 ) {
-  const username = String(extra.username ?? user.displayName ?? "Người dùng");
+  const username = String(extra.username ?? user.displayName ?? "User");
   const data = await upsertUserDocument(user, { ...extra, username });
   if (!user.isAnonymous) await updateCommentsForUsername(user.uid, username);
   return data;
@@ -140,14 +140,14 @@ export async function addRecipeComment(
   comment: {
     text: string;
     username?: string;
-    userId?: string | null; // khách: undefined hoặc null đều được
+    userId?: string | null; // guest: undefined or null are both fine
   },
 ) {
   const createdAt = new Date().toISOString();
   const ref = await addDoc(collection(db, "recipes", recipeId, "comments"), {
     text: comment.text,
-    username: comment.username ?? "Khách",
-    userId: comment.userId ?? null, // không bao giờ để undefined
+    username: comment.username ?? "Guest",
+    userId: comment.userId ?? null, // never leave undefined
     createdAt,
   });
   return { id: ref.id, createdAt };
@@ -185,9 +185,9 @@ export async function recipeSlugExists(slug: string, ignoreId?: string) {
 }
 
 export async function getAuthorName(userId?: string) {
-  if (!userId) return "Tác giả ẩn danh";
+  if (!userId) return "Anonymous author";
   const profile = await fetchUserProfile(userId);
-  return String(profile?.username ?? profile?.displayName ?? "Tác giả ẩn danh");
+  return String(profile?.username ?? profile?.displayName ?? "Anonymous author");
 }
 
 export { auth };

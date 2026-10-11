@@ -69,7 +69,7 @@ function EditorForm({
     void fetchRecipeBySlug(slug)
       .then((recipe) => {
         if (!recipe) {
-          setError("Not found công thức để chỉnh sửa.");
+          setError("Recipe to edit not found.");
           return;
         }
         setRecipeId(recipe.id);
@@ -82,11 +82,11 @@ function EditorForm({
         setImageUrl(recipe.imageUrl ?? "");
         setNutrition(nutritionToForm(recipe.nutrition));
       })
-      .catch(() => setError("Không thể tải công thức."))
+      .catch(() => setError("Could not load the recipe."))
       .finally(() => setInitialLoading(false));
   }, [mode, slug]);
 
-  // Tự lấy ảnh bìa từ video YouTube khi chưa có ảnh do người dùng chọn/dán.
+  // Automatically use the YouTube video thumbnail as the cover image when the user hasn't chosen or pasted one.
   useEffect(() => {
     const videoId = extractYouTubeId(youtubeUrl);
     if (!videoId) return;
@@ -108,12 +108,12 @@ function EditorForm({
 
   async function generateFromYouTube() {
     if (!currentUser) {
-      setError("Vui lòng đăng nhập trước khi tạo công thức bằng AI.");
+      setError("Please sign in before generating a recipe with AI.");
       return;
     }
     if (!extractYouTubeId(youtubeUrl)) {
       setError(
-        "Hãy nhập đường dẫn video YouTube hợp lệ trước khi tạo nội dung.",
+        "Please enter a valid YouTube video URL before generating content.",
       );
       return;
     }
@@ -124,7 +124,7 @@ function EditorForm({
     if (
       hasExistingContent &&
       !window.confirm(
-        "AI sẽ thay thế tiêu đề, mô tả, nguyên liệu, cách làm, danh mục và dinh dưỡng hiện tại. Bạn muốn tiếp tục?",
+        "AI will replace the current title, description, ingredients, instructions, category, and nutrition. Do you want to continue?",
       )
     ) {
       return;
@@ -157,7 +157,7 @@ function EditorForm({
         };
       };
       if (!response.ok) {
-        throw new Error(result.error || "Không thể tạo nội dung từ video này.");
+        throw new Error(result.error || "Could not generate content from this video.");
       }
       const recipe = result.recipe;
       if (
@@ -167,7 +167,7 @@ function EditorForm({
         !Array.isArray(recipe.ingredients) ||
         !Array.isArray(recipe.steps)
       ) {
-        throw new Error("AI trả về bản nháp chưa đầy đủ. Vui lòng thử lại.");
+        throw new Error("The AI returned an incomplete draft. Please try again.");
       }
 
       setTitle(recipe.title);
@@ -177,11 +177,11 @@ function EditorForm({
       setSteps(recipe.steps.join("\n"));
       setNutrition(nutritionToForm(recipe.nutrition));
       setAiMessage(
-        `Đã tạo bản nháp${result.source?.videoTitle ? ` từ video “${result.source.videoTitle}”` : " từ video YouTube"}. Hãy kiểm tra định lượng, cách làm và các ước tính dinh dưỡng trước khi lưu.`,
+        `Draft created${result.source?.videoTitle ? ` from video “${result.source.videoTitle}”` : " from the YouTube video"}. Please check the quantities, instructions, and nutrition estimates before saving.`,
       );
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Không thể tạo công thức bằng AI.",
+        err instanceof Error ? err.message : "Could not generate the recipe with AI.",
       );
     } finally {
       setAiBusy(false);
@@ -233,30 +233,29 @@ function EditorForm({
         await createRecipe(payload as Omit<Recipe, "id">);
       }
       setSuccess(
-        mode === "edit" ? "Đã cập nhật công thức." : "Đã thêm công thức mới.",
+        mode === "edit" ? "Recipe updated." : "New recipe added.",
       );
       window.setTimeout(() => router.push(`/recipes/${finalSlug}`), 500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Không thể lưu công thức.");
+      setError(err instanceof Error ? err.message : "Could not save the recipe.");
     } finally {
       setBusy(false);
     }
   }
 
-  if (initialLoading) return <LoadingBlock label="Đang mở công thức..." />;
+  if (initialLoading) return <LoadingBlock label="Opening recipe..." />;
 
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-7 flex flex-col gap-2">
         <span className="eyebrow">
-          <Icon name={mode === "edit" ? "edit" : "plus"} size={15} /> Sổ tay bếp
+          <Icon name={mode === "edit" ? "edit" : "plus"} size={15} /> Kitchen notebook
         </span>
         <h1 className="section-title">
-          {mode === "edit" ? "Chỉnh sửa công thức" : "Add a recipe"}
+          {mode === "edit" ? "Edit recipe" : "Add a recipe"}
         </h1>
         <p className="text-sm leading-6 text-muted">
-          Ghi lại món ngon theo cách dễ đọc, dễ nấu và dễ truyền lại cho người
-          thân. Bạn cũng có thể tạo bản nháp từ video YouTube bằng AI.
+          Write down delicious dishes in a way that is easy to read, easy to cook, and easy to pass on to loved ones. You can also generate a draft from a YouTube video with AI.
         </p>
       </div>
       <div className="rounded-[2rem] border border-border bg-card p-5 shadow-sm sm:p-8">
@@ -274,35 +273,35 @@ function EditorForm({
           <div className="grid gap-5 md:grid-cols-2">
             <label className="block md:col-span-2">
               <span className="form-label">
-                <Icon name="bowl" size={15} /> Tên món / tiêu đề
+                <Icon name="bowl" size={15} /> Dish name / title
               </span>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="form-input"
                 required
-                placeholder="Ví dụ: Phở bò gia truyền"
+                placeholder="Example: Traditional beef pho"
               />
             </label>
             <label className="block md:col-span-2">
               <span className="form-label">
-                <Icon name="book" size={15} /> Mô tả
+                <Icon name="book" size={15} /> Description
               </span>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="form-input min-h-28"
                 required
-                placeholder="Một vài câu giới thiệu về món ăn, dịp thường nấu hoặc hương vị đặc trưng..."
+                placeholder="A few sentences introducing the dish, when it's usually cooked, or its signature flavors..."
               />
             </label>
             <label className="block">
               <span className="form-label">
-                <Icon name="tag" size={15} /> Danh mục
+                <Icon name="tag" size={15} /> Category
               </span>
               <ThemedSelect
                 name="category"
-                ariaLabel="Danh mục"
+                ariaLabel="Category"
                 value={category}
                 onChange={(value) => setCategory(value as Recipe["category"])}
                 options={[
@@ -311,7 +310,7 @@ function EditorForm({
                     label: categoryLabel(item),
                   })),
                 ]}
-                placeholder="Chọn danh mục"
+                placeholder="Select a category"
               />
             </label>
             <div className="block">
@@ -333,19 +332,17 @@ function EditorForm({
                 placeholder="https://www.youtube.com/..."
               />
               <p className="mt-2 text-xs leading-5 text-muted">
-                AI đọc phụ đề video để soạn tiêu đề, mô tả, nguyên liệu, cách
-                làm và dinh dưỡng.
+                AI reads the video subtitles to draft the title, description, ingredients, instructions, and nutrition.
               </p>
             </div>
             <div className="md:col-span-2 rounded-2xl border border-border bg-cream/40 p-4 sm:p-5">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="font-semibold text-ink">
-                    Tạo nội dung bằng AI
+                    Generate content with AI
                   </h2>
                   <p className="mt-1 text-xs leading-5 text-muted">
-                    Dùng AI tạo bản nháp để bạn xem lại; công thức chưa được lưu
-                    cho đến khi bấm nút đăng.
+                    Use AI to create a draft for you to review; the recipe is not saved until you click the publish button.
                   </p>
                 </div>
                 <button
@@ -359,23 +356,22 @@ function EditorForm({
                   ) : (
                     <Icon name="refresh" size={17} />
                   )}{" "}
-                  {aiBusy ? "Đang tạo bản nháp..." : "Tạo công thức bằng AI"}
+                  {aiBusy ? "Generating draft..." : "Generate recipe with AI"}
                 </button>
               </div>
               <label className="mt-4 block">
                 <span className="mb-1 block text-sm font-medium text-ink">
-                  Lời thoại / phụ đề video (không bắt buộc)
+                  Video dialogue / subtitles (optional)
                 </span>
                 <textarea
                   value={transcriptInput}
                   onChange={(e) => setTranscriptInput(e.target.value)}
                   className="form-input min-h-24"
                   maxLength={60000}
-                  placeholder="Để trống để AI tự lấy phụ đề YouTube. Nếu video không có phụ đề hoặc máy chủ không đọc được, hãy dán lời thoại/mô tả vào đây."
+                  placeholder="Leave blank to let AI fetch the YouTube subtitles automatically. If the video has no subtitles or the server cannot read them, paste the dialogue/description here."
                 />
                 <span className="mt-1 block text-xs text-muted">
-                  {transcriptInput.length.toLocaleString("vi-VN")} / 60.000 ký
-                  tự
+                  {transcriptInput.length.toLocaleString("en-US")} / 60,000 characters
                 </span>
               </label>
               {aiMessage && (
@@ -391,7 +387,7 @@ function EditorForm({
               <span className="form-label">
                 <Icon name="list" size={15} /> Ingredients{" "}
                 <span className="font-normal text-muted">
-                  (mỗi dòng một nguyên liệu)
+                  (one ingredient per line)
                 </span>
               </span>
               <textarea
@@ -399,14 +395,14 @@ function EditorForm({
                 onChange={(e) => setIngredients(e.target.value)}
                 className="form-input min-h-40"
                 required
-                placeholder={"500g thịt bò\n1kg xương ống\n..."}
+                placeholder={"500g beef\n1kg marrow bones\n..."}
               />
             </label>
             <label className="block md:col-span-2">
               <span className="form-label">
                 <Icon name="route" size={15} /> Instructions{" "}
                 <span className="font-normal text-muted">
-                  (mỗi dòng một bước)
+                  (one step per line)
                 </span>
               </span>
               <textarea
@@ -415,15 +411,15 @@ function EditorForm({
                 className="form-input min-h-44"
                 required
                 placeholder={
-                  "Sơ chế nguyên liệu...\nNinh nước dùng...\nTrình bày và thưởng thức..."
+                  "Prepare the ingredients...\nSimmer the broth...\nPlate and enjoy..."
                 }
               />
             </label>
             <fieldset className="md:col-span-2">
               <legend className="form-label">
-                <Icon name="list" size={15} /> Giá trị dinh dưỡng{" "}
+                <Icon name="list" size={15} /> Nutritional values{" "}
                 <span className="font-normal text-muted">
-                  (tuỳ chọn, tính cho mỗi khẩu phần)
+                  (optional, per serving)
                 </span>
               </legend>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -453,7 +449,7 @@ function EditorForm({
             </fieldset>
             <div className="block md:col-span-2">
               <span className="form-label">
-                <Icon name="image" size={15} /> Ảnh món ăn
+                <Icon name="image" size={15} /> Dish photo
               </span>
               <div className="grid gap-3 md:grid-cols-2">
                 <input
@@ -472,7 +468,7 @@ function EditorForm({
                     setImageAuto(false);
                   }}
                   className="form-input"
-                  placeholder="Hoặc dán URL ảnh (https://...)"
+                  placeholder="Or paste an image URL (https://...)"
                 />
               </div>
               {!imageFile && imageUrl.trim() && (
@@ -480,25 +476,25 @@ function EditorForm({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imageUrl}
-                    alt="Xem trước ảnh món ăn"
+                    alt="Dish photo preview"
                     className="aspect-video w-full object-cover"
                   />
                 </div>
               )}
               <span className="mt-2 block text-xs text-muted">
                 {imageAuto
-                  ? "Đang dùng ảnh bìa của video YouTube. Chọn ảnh khác hoặc dán URL để thay thế."
-                  : "Ảnh mới sẽ được tải lên Cloudinary bằng unsigned upload preset; URL sẽ được giữ nguyên khi bạn dán ảnh có sẵn. Nếu để trống và có link YouTube, ảnh bìa video sẽ được dùng tự động."}
+                  ? "Using the YouTube video thumbnail. Choose another image or paste a URL to replace it."
+                  : "A new image will be uploaded to Cloudinary using an unsigned upload preset; a URL is kept as-is when you paste an existing image. If left blank and a YouTube link is present, the video thumbnail will be used automatically."}
               </span>
             </div>
           </div>
           <div className="rounded-2xl bg-cream/70 p-4 text-sm text-muted">
-            <strong className="text-ink">Đường dẫn dự kiến:</strong> /recipes/
+            <strong className="text-ink">Expected URL:</strong> /recipes/
             {generatedSlug || "ten-mon"}
           </div>
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <Link href="/" className="btn-secondary justify-center">
-              Huỷ
+              Cancel
             </Link>
             <button
               disabled={busy || aiBusy}
@@ -509,7 +505,7 @@ function EditorForm({
               ) : (
                 <Icon name="check" size={17} />
               )}{" "}
-              {mode === "edit" ? "Save thay đổi" : "Đăng công thức"}
+              {mode === "edit" ? "Save changes" : "Publish recipe"}
             </button>
           </div>
         </form>

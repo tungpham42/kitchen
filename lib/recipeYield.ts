@@ -4,7 +4,7 @@ import type { Recipe } from "@/lib/types";
  * Used when a recipe has no stored yield. Nutrition values on the site are
  * already expressed "per serving", so one serving is a consistent baseline.
  */
-export const DEFAULT_RECIPE_YIELD = "1 khẩu phần";
+export const DEFAULT_RECIPE_YIELD = "1 serving";
 
 /** Accept strings or numbers from Firestore / the editor, drop everything else. */
 export function normalizeRecipeYield(value: unknown): string | undefined {
@@ -20,13 +20,15 @@ export function normalizeRecipeYield(value: unknown): string | undefined {
   return undefined;
 }
 
-/** Human readable yield, e.g. "4" -> "4 khẩu phần", "4 người ăn" stays as is. */
+/** Human readable yield, e.g. "4" -> "4 servings", "4 people" stays as is. */
 export function formatRecipeYield(recipe: Pick<Recipe, "recipeYield">): string {
   const value = normalizeRecipeYield(recipe.recipeYield);
 
   if (!value) return DEFAULT_RECIPE_YIELD;
 
-  return /^\d+(?:[.,]\d+)?$/.test(value) ? `${value} khẩu phần` : value;
+  return /^\d+(?:[.,]\d+)?$/.test(value)
+    ? `${value} ${Number(value.replace(",", ".")) === 1 ? "serving" : "servings"}`
+    : value;
 }
 
 /**

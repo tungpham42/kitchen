@@ -59,28 +59,28 @@ const shareOptions: Array<{
   {
     name: "facebook",
     displayName: "Facebook",
-    label: "Rủ hội bạn",
+    label: "Invite your friends",
   },
   {
     name: "x",
     displayName: "X",
-    label: "Kể chuyện món này",
+    label: "Tell this dish’s story",
   },
   {
     name: "linkedin",
     displayName: "LinkedIn",
-    label: "Lan tỏa cảm hứng",
+    label: "Spread inspiration",
   },
 ];
 
 const shareMessages: Record<BrandName, string> = {
   facebook:
-    "🔥 TÌNH CỜ LƯỚT THẤY MÀ THẤY ĐÓI NGANG 😋\n\nCó những món ăn không chỉ ngon — mà còn kéo cả ký ức gia đình quay về. ❤️\n\nMình vừa tìm thấy một món rất đáng để lưu lại cho mâm cơm tuần này. Ai mê món Việt, tag người hay rủ bạn vào bếp cùng! 👇",
+    "🔥 JUST SCROLLED PAST THIS AND NOW I’M HUNGRY 😋\n\nSome dishes are more than delicious — they bring family memories flooding back. ❤️\n\nI just found a dish worth saving for this week’s meals. Love Vietnamese food? Tag the person you’d invite into the kitchen with you! 👇",
 
-  x: "🔥 Không biết tối nay ăn gì? Đây là tín hiệu bạn đang tìm một món Việt thật cuốn 😋\n\nNgon, dễ làm, đậm vị nhà — kiểu món nhìn một lần là muốn vào bếp ngay. 👇",
+  x: "🔥 Not sure what to eat tonight? Here’s your sign to try an irresistible Vietnamese dish 😋\n\nDelicious, easy to make, and full of homemade flavor — the kind of dish that makes you want to head straight to the kitchen. 👇",
 
   linkedin:
-    "🍲 Có những món ăn không chỉ tạo nên một bữa cơm, mà còn tạo nên những câu chuyện để nhớ.\n\nMình vừa khám phá một công thức mang đúng tinh thần đó: gần gũi, dễ áp dụng và đậm chất Việt. Một chút cảm hứng cho căn bếp và cho những bữa cơm có ý nghĩa. ✨\n\nRất đáng để lưu lại và chia sẻ cùng những người cũng yêu ẩm thực Việt.",
+    "🍲 Some dishes do more than bring a meal to the table — they create memories and stories worth sharing.\n\nI just discovered a recipe that captures that spirit: approachable, practical, and full of Vietnamese character. A little inspiration for your kitchen and for more meaningful meals. ✨\n\nDefinitely worth saving and sharing with others who love Vietnamese cuisine.",
 };
 
 export default function HeroShare() {
@@ -175,14 +175,14 @@ export default function HeroShare() {
   return (
     <div className="mt-7">
       <p className="text-sm font-extrabold text-gold-light sm:text-base">
-        Thấy ngon? Đừng giữ một mình!
+        Looks delicious? Don’t keep it to yourself!
       </p>
 
       <p className="mt-1 text-xs leading-5 text-ivory/65 sm:text-sm">
-        Một cú chạm để món nhà lên sóng — rủ bạn bè vào bếp và lan tỏa cảm hứng.
+        One tap puts your favorite home-cooked dishes in the spotlight — invite friends into the kitchen and share the inspiration.
       </p>
 
-      <div className="mt-3 flex flex-wrap gap-2" aria-label="Share trang này">
+      <div className="mt-3 flex flex-wrap gap-2" aria-label="Share this page">
         {shareOptions.map(({ name, displayName, label }) => {
           // Facebook uses Web Share API.
           if (name === "facebook") {
@@ -192,7 +192,7 @@ export default function HeroShare() {
                 type="button"
                 onClick={handleFacebookShare}
                 disabled={!shareUrl}
-                aria-label={`${label} trên ${displayName}`}
+                aria-label={`${label} on ${displayName}`}
                 data-share-message={shareMessages[name]}
                 className={`${shareLinkClass} ${brandClasses[name]} disabled:pointer-events-none disabled:opacity-50`}
               >
@@ -210,7 +210,7 @@ export default function HeroShare() {
               href={shareLinks[name]}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${label} trên ${displayName}`}
+              aria-label={`${label} on ${displayName}`}
               data-share-message={shareMessages[name]}
               onClick={(event) => {
                 if (!shareUrl) {

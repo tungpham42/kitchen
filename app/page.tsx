@@ -44,21 +44,21 @@ export default function HomePage() {
         <div className="absolute -bottom-20 -left-16 size-64 rounded-full border border-ivory/10 bg-ivory/5" />
         <div className="relative max-w-3xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-gold/35 bg-ivory/10 px-3 py-1 text-xs font-extrabold uppercase tracking-[0.18em] text-gold-light">
-            <Icon name="bowl" size={15} /> Hương vị Việt
+            <Icon name="bowl" size={15} /> Vietnamese flavors
           </span>
           <h1 className="mt-5 font-serif text-4xl font-bold leading-tight sm:text-6xl">
-            Mỗi món ăn là một câu chuyện của gia đình.
+            Every dish is a family story.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-ivory/80 sm:text-lg">
-            Khám phá công thức, tìm ý tưởng cho mâm cơm trong tuần và chia sẻ
-            những món ngon đã gắn với căn bếp của bạn.
+            Discover recipes, find ideas for meals through the week, and share
+            the delicious dishes tied to your kitchen.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link href="/meal-plans" className="btn-gold">
-              <Icon name="calendar" size={17} /> Lên thực đơn tuần
+              <Icon name="calendar" size={17} /> Plan the weekly menu
             </Link>
             <Link href="/recipes/new" className="btn-outline-dark">
-              <Icon name="plus" size={17} /> Share món nhà
+              <Icon name="plus" size={17} /> Share a home dish
             </Link>
           </div>
           <HeroShare />
@@ -68,18 +68,18 @@ export default function HomePage() {
       <section className="grid gap-4 md:grid-cols-3">
         {[
           [
-            "Bếp gia đình",
-            "Món quen mỗi ngày, nguyên liệu dễ tìm và cách làm dễ theo.",
+            "Family kitchen",
+            "Familiar everyday dishes, easy-to-find ingredients, and methods that are easy to follow.",
             "bowl",
           ],
           [
-            "Gợi ý cả tuần",
-            "Bốc thực đơn sáng — trưa — tối — tráng miệng - món chay - món dưỡng sinh theo sở thích.",
+            "Weekly suggestions",
+            "Shuffle menus for breakfast — lunch — dinner — dessert — vegan — wellness dishes to suit your taste.",
             "calendar",
           ],
           [
-            "Share & lưu giữ",
-            "Đăng công thức và để lại câu chuyện phía sau món ăn.",
+            "Share & preserve",
+            "Post recipes and leave the story behind the dish.",
             "book",
           ],
         ].map(([title, text, icon]) => (

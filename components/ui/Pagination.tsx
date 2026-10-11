@@ -24,14 +24,14 @@ export default function Pagination({
   return (
     <nav
       className="mt-8 flex items-center justify-center gap-1"
-      aria-label="Phân trang"
+      aria-label="Pagination"
     >
       <button
         type="button"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
         className="page-button"
-        aria-label="Trang trước"
+        aria-label="Previous page"
       >
         <Icon name="chevron-left" size={17} />
       </button>
@@ -56,7 +56,7 @@ export default function Pagination({
         disabled={currentPage === pageCount}
         onClick={() => onPageChange(currentPage + 1)}
         className="page-button"
-        aria-label="Trang sau"
+        aria-label="Next page"
       >
         <Icon name="chevron-right" size={17} />
       </button>

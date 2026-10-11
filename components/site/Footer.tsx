@@ -11,17 +11,18 @@ export default function Footer() {
             <Icon name="bowl" size={20} /> {SITE_NAME}
           </div>
           <p className="mt-1">
-            Save giữ những món ngon, câu chuyện và ký ức quanh mâm cơm Việt.
+            Preserving delicious dishes, stories, and memories around the
+            Vietnamese family table.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           {" "}
-          <Link href="/gioi-thieu" className="hover:text-lacquer">
-            Giới thiệu{" "}
+          <Link href="/about-us" className="hover:text-lacquer">
+            About
           </Link>
           <span className="text-border">•</span>{" "}
-          <Link href="/lien-he" className="hover:text-lacquer">
-            Liên hệ{" "}
+          <Link href="/contact-us" className="hover:text-lacquer">
+            Contact
           </Link>
           <span className="text-border">•</span>
           <a

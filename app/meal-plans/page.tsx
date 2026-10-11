@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import WeeklySuggestions from "@/components/recipes/WeeklySuggestions";
 export const metadata: Metadata = {
-  title: "Gợi ý món ăn theo tuần",
-  description: "Gợi ý thực đơn món Việt theo từng ngày trong tuần.",
+  title: "Weekly dish suggestions",
+  description: "Vietnamese menu suggestions for each day of the week.",
   openGraph: {
-    title: "Gợi ý món ăn theo tuần",
-    description: "Gợi ý thực đơn món Việt theo từng ngày trong tuần.",
+    title: "Weekly dish suggestions",
+    description: "Vietnamese menu suggestions for each day of the week.",
     images: [
       {
-        url: "/goi-y.jpg",
+        url: "/meal-plans.jpg",
         width: 1200,
         height: 630,
-        alt: "Gợi ý thực đơn món Việt theo từng ngày trong tuần.",
+        alt: "Vietnamese menu suggestions for each day of the week.",
       },
     ],
   },

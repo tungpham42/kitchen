@@ -143,7 +143,7 @@ function getIngredientSearchUrl(ingredient: string, domain: string): string {
  * Google Maps can show branch addresses and directions.
  */
 function getStoreAddressUrl(storeName: string): string {
-  const query = `${storeName} gần tôi`;
+  const query = `${storeName} near me`;
 
   return (
     "https://www.google.com/maps/search/?api=1&query=" +
@@ -157,8 +157,8 @@ function getStoreAddressUrl(storeName: string): string {
 function getMarketAddressUrl(ingredient?: string): string {
   const keyword = ingredient ? getIngredientKeyword(ingredient) : "";
   const query = keyword
-    ? `chợ thực phẩm bán ${keyword} gần tôi`
-    : "chợ thực phẩm gần tôi";
+    ? `food market selling ${keyword} near me`
+    : "food market near me";
 
   return (
     "https://www.google.com/maps/search/?api=1&query=" +
@@ -202,25 +202,25 @@ function formatCommentDate(createdAt: unknown) {
     const elapsedMinutes = Math.floor(elapsedMs / 60_000);
 
     if (elapsedMinutes < 1) {
-      return "vừa xong";
+      return "just now";
     }
 
     if (elapsedMinutes < 60) {
-      return `${elapsedMinutes} phút trước`;
+      return `${elapsedMinutes} ${elapsedMinutes === 1 ? "minute" : "minutes"} ago`;
     }
 
     const elapsedHours = Math.floor(elapsedMinutes / 60);
 
     if (elapsedHours < 24) {
-      return `${elapsedHours} giờ trước`;
+      return `${elapsedHours} ${elapsedHours === 1 ? "hour" : "hours"} ago`;
     }
 
     const elapsedDays = Math.floor(elapsedHours / 24);
 
-    return `${elapsedDays} ngày trước`;
+    return `${elapsedDays} ${elapsedDays === 1 ? "day" : "days"} ago`;
   }
 
-  return date.toLocaleString("vi-VN", {
+  return date.toLocaleString("en-US", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -386,7 +386,7 @@ function ShoppingPanel({ ingredients }: { ingredients: string[] }) {
   return (
     <div className="mt-4 rounded-2xl border border-border bg-card p-3 sm:p-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-bold text-muted">Mua tại:</span>
+        <span className="text-xs font-bold text-muted">Buy at:</span>
 
         {SHOPPING_PLACES.map((item, index) => (
           <button
@@ -413,7 +413,7 @@ function ShoppingPanel({ ingredients }: { ingredients: string[] }) {
           className="inline-flex items-center gap-1 text-bamboo underline underline-offset-4"
         >
           <Icon name="map-pin" size={13} />
-          Cửa hàng {place.name} gần bạn
+          {place.name} stores near you
         </a>
 
         <a
@@ -423,7 +423,7 @@ function ShoppingPanel({ ingredients }: { ingredients: string[] }) {
           className="inline-flex items-center gap-1 text-bamboo underline underline-offset-4"
         >
           <Icon name="map-pin" size={13} />
-          Chợ gần bạn
+          Markets near you
         </a>
 
         <button
@@ -431,7 +431,7 @@ function ShoppingPanel({ ingredients }: { ingredients: string[] }) {
           onClick={copyList}
           className="inline-flex items-center gap-1 text-lacquer underline underline-offset-4"
         >
-          {copied ? "Đã sao chép danh sách" : "Sao chép danh sách đi chợ"}
+          {copied ? "List copied" : "Copy shopping list"}
         </button>
       </div>
 
@@ -447,18 +447,17 @@ function ShoppingPanel({ ingredients }: { ingredients: string[] }) {
               href={getIngredientSearchUrl(keywords[index], place.domain)}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`Tìm ${keywords[index]} tại ${place.name}`}
+              aria-label={`Search for ${keywords[index]} at ${place.name}`}
               className="shrink-0 rounded-lg border border-border bg-cream/50 px-2.5 py-1 text-xs font-bold text-lacquer transition hover:bg-cream"
             >
-              Xem giá
+              View price
             </a>
           </li>
         ))}
       </ul>
 
       <p className="pt-2 text-xs leading-5 text-muted">
-        Giá bán, tồn kho và địa chỉ thực tế cần được xác nhận trên website hoặc
-        bản đồ.
+        Actual prices, stock, and addresses should be confirmed on the website or map.
       </p>
     </div>
   );
@@ -474,7 +473,7 @@ export default function RecipeDetail({
   // Everything arrives pre-fetched from the server page: no spinner, no
   // client-side fetch waterfall.
   const recipe = initialData?.recipe ?? null;
-  const author = initialData?.author ?? "Tác giả ẩn danh";
+  const author = initialData?.author ?? "Anonymous author";
   const related = initialData?.related ?? [];
 
   const [comments, setComments] = useState<Comment[]>(
@@ -536,8 +535,8 @@ export default function RecipeDetail({
       const text = commentText.trim();
 
       const username = currentUser
-        ? currentUser.displayName || "Người dùng ẩn danh"
-        : guestName.trim() || "Khách";
+        ? currentUser.displayName || "Anonymous user"
+        : guestName.trim() || "Guest";
 
       // Guests have no account: userId is null and they pick their own name.
       const saved = await addRecipeComment(recipe.id, {
@@ -560,7 +559,7 @@ export default function RecipeDetail({
       setCommentText("");
     } catch (err) {
       console.error("Comment error:", err);
-      setError("Không thể đăng bình luận.");
+      setError("Could not post the comment.");
     } finally {
       setCommentBusy(false);
     }
@@ -569,7 +568,7 @@ export default function RecipeDetail({
   if (!recipe) {
     return (
       <div className="mx-auto max-w-2xl">
-        <Alert tone="warning">Not found công thức.</Alert>
+        <Alert tone="warning">Recipe not found.</Alert>
       </div>
     );
   }
@@ -639,7 +638,7 @@ export default function RecipeDetail({
               <div className="mt-5 space-y-2 rounded-2xl bg-cream/70 p-4">
                 <div className="flex items-center gap-2 text-sm font-semibold text-ink">
                   <Icon name="user" size={16} className="text-lacquer" />
-                  Tác giả: {author}
+                  Author: {author}
                 </div>
 
                 {/* Mirrors the recipeYield value in the JSON-LD. */}
@@ -652,7 +651,7 @@ export default function RecipeDetail({
               <div className="mt-7">
                 <h2 className="subheading">
                   <Icon name="share" size={19} />
-                  Share công thức
+                  Share recipe
                 </h2>
 
                 <ShareLinks title={recipe.title} />
@@ -662,7 +661,7 @@ export default function RecipeDetail({
                 <section className="mt-8">
                   <h2 className="subheading">
                     <Icon name="youtube" size={19} />
-                    Video hướng dẫn
+                    Tutorial video
                   </h2>
 
                   <div className="aspect-video overflow-hidden rounded-2xl border border-border bg-black">
@@ -686,12 +685,11 @@ export default function RecipeDetail({
                     className="flex items-center gap-2 font-semibold text-ink"
                   >
                     <Icon name="youtube" size={18} className="text-lacquer" />
-                    Nguồn tham khảo
+                    Reference source
                   </h2>
 
                   <p className="mt-2 text-sm leading-6 text-muted">
-                    Recipes này tham khảo từ video YouTube gốc. Bạn có thể xem
-                    video để đối chiếu nguyên liệu và các bước thực hiện.
+                    This recipe is based on the original YouTube video. You can watch the video to compare the ingredients and steps.
                   </p>
 
                   <a
@@ -700,11 +698,11 @@ export default function RecipeDetail({
                     rel="noopener noreferrer"
                     className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-lacquer underline underline-offset-4 hover:text-lacquer/80"
                   >
-                    Xem video gốc trên YouTube
+                    Watch the original video on YouTube
                   </a>
 
                   <p className="mt-2 text-xs leading-5 text-muted">
-                    Video và nội dung gốc thuộc về chủ sở hữu tương ứng.
+                    The video and original content belong to their respective owners.
                   </p>
                 </section>
               )}
@@ -767,9 +765,9 @@ export default function RecipeDetail({
                 <section className="mt-8">
                   <h2 className="subheading">
                     <Icon name="list" size={19} />
-                    Dinh dưỡng{" "}
+                    Nutrition{" "}
                     <span className="text-sm font-sans font-medium text-muted">
-                      (mỗi khẩu phần)
+                      (per serving)
                     </span>
                   </h2>
 
@@ -848,7 +846,7 @@ export default function RecipeDetail({
               <section className="mt-10 border-t border-border pt-8">
                 <h2 className="subheading">
                   <Icon name="comment" size={19} />
-                  Bình luận{" "}
+                  Comments{" "}
                   <span className="text-sm font-sans font-medium text-muted">
                     ({comments.length})
                   </span>
@@ -863,7 +861,7 @@ export default function RecipeDetail({
                       >
                         <div className="flex items-center justify-between gap-3">
                           <strong className="text-sm text-ink">
-                            {comment.username || "Người dùng"}
+                            {comment.username || "User"}
                           </strong>
 
                           <span
@@ -882,7 +880,7 @@ export default function RecipeDetail({
                   </div>
                 ) : (
                   <p className="mt-4 rounded-2xl bg-cream/60 p-4 text-sm text-muted">
-                    Chưa có bình luận. Hãy là người đầu tiên góp chuyện!
+                    No comments yet. Be the first to join the conversation!
                   </p>
                 )}
 
@@ -900,8 +898,8 @@ export default function RecipeDetail({
                         onChange={(e) => setGuestName(e.target.value)}
                         className="form-input mb-3"
                         maxLength={40}
-                        placeholder="Tên của bạn (không bắt buộc)"
-                        aria-label="Tên của bạn"
+                        placeholder="Your name (optional)"
+                        aria-label="Your name"
                       />
                     )}
 
@@ -911,7 +909,7 @@ export default function RecipeDetail({
                       className="form-input min-h-28"
                       required
                       maxLength={1000}
-                      placeholder="Thêm bình luận của bạn..."
+                      placeholder="Add your comment..."
                     />
 
                     <button
@@ -919,11 +917,11 @@ export default function RecipeDetail({
                       className="btn-primary mt-3"
                     >
                       {commentBusy ? (
-                        "Đang đăng..."
+                        "Posting..."
                       ) : (
                         <>
                           <Icon name="comment" size={16} />
-                          Đăng bình luận
+                          Post comment
                         </>
                       )}
                     </button>
@@ -937,7 +935,7 @@ export default function RecipeDetail({
               {(owner || isAdmin) && (
                 <div className="rounded-2xl border border-gold/30 bg-gold/10 p-4">
                   <div className="text-sm font-bold text-lacquer">
-                    Quản lý công thức
+                    Manage recipe
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -946,7 +944,7 @@ export default function RecipeDetail({
                       className="btn-secondary"
                     >
                       <Icon name="edit" size={15} />
-                      Chỉnh sửa
+                      Edit
                     </Link>
                   </div>
                 </div>
@@ -954,7 +952,7 @@ export default function RecipeDetail({
 
               {related.length > 0 && (
                 <div>
-                  <h2 className="subheading text-lg">Món cùng danh mục</h2>
+                  <h2 className="subheading text-lg">More in this category</h2>
 
                   <div className="mt-3 space-y-3">
                     {relatedItems.map((item) => (
@@ -980,7 +978,7 @@ export default function RecipeDetail({
                         className="page-button"
                         disabled={relatedPage === 1}
                         onClick={() => setRelatedPage((p) => p - 1)}
-                        aria-label="Trang trước"
+                        aria-label="Previous page"
                       >
                         <Icon name="chevron-left" />
                       </button>
@@ -993,7 +991,7 @@ export default function RecipeDetail({
                         className="page-button"
                         disabled={relatedPage === relatedPages}
                         onClick={() => setRelatedPage((p) => p + 1)}
-                        aria-label="Trang tiếp theo"
+                        aria-label="Next page"
                       >
                         <Icon name="chevron-right" />
                       </button>

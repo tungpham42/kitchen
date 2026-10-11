@@ -98,7 +98,7 @@ export default function RecipeExplorer() {
   useEffect(() => {
     void fetchRecipes()
       .then(setRecipes)
-      .catch(() => setError("Không thể tải công thức. Vui lòng thử lại."))
+      .catch(() => setError("Could not load recipes. Please try again."))
       .finally(() => setLoading(false));
   }, []);
 
@@ -183,7 +183,7 @@ export default function RecipeExplorer() {
 
   const searchInput = (
     <label className="relative block">
-      <span className="sr-only">Search công thức</span>
+      <span className="sr-only">Search recipes</span>
       <input
         type="search"
         value={search}
@@ -192,7 +192,7 @@ export default function RecipeExplorer() {
           updateUrl(1, value, category, sort);
         }}
         className="form-input pr-11"
-        placeholder="Tìm món ăn, nguyên liệu, tên công thức..."
+        placeholder="Search dishes, ingredients, recipe names..."
       />
       <Icon
         name="search"
@@ -208,10 +208,9 @@ export default function RecipeExplorer() {
           <span className="eyebrow">
             <Icon name="bowl" size={15} /> {SITE_NAME}
           </span>
-          <h2 className="section-title">Khám phá công thức</h2>
+          <h2 className="section-title">Explore recipes</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-            Từ món cơm gia đình đến món đãi khách — tìm cảm hứng cho mâm cơm hôm
-            nay.
+            From everyday family meals to dishes for guests — find inspiration for today’s meal.
           </p>
         </div>
         <button
@@ -219,7 +218,7 @@ export default function RecipeExplorer() {
           type="button"
           className="btn-secondary self-start sm:self-auto"
         >
-          <Icon name="refresh" size={16} /> Đặt lại
+          <Icon name="refresh" size={16} /> Reset
         </button>
       </div>
 
@@ -233,60 +232,60 @@ export default function RecipeExplorer() {
         >
           {!isMobile && searchInput}
           <label>
-            <span className="sr-only">Danh mục</span>
+            <span className="sr-only">Category</span>
             <ThemedSelect
               name="category"
-              ariaLabel="Danh mục"
+              ariaLabel="Category"
               value={category}
               onChange={(value) => {
                 updateUrl(1, search, value, sort);
               }}
               options={[
-                { value: "", label: "Tất cả danh mục" },
+                { value: "", label: "All categories" },
                 ...RECIPE_CATEGORIES.map((item) => ({
                   value: item,
                   label: categoryLabel(item),
                 })),
               ]}
-              placeholder="Chọn danh mục"
+              placeholder="Select a category"
             />
           </label>
           <label>
-            <span className="sr-only">Sắp xếp</span>
+            <span className="sr-only">Sort</span>
             <ThemedSelect
               name="sortBy"
-              ariaLabel="Sắp xếp"
+              ariaLabel="Sort"
               value={sort}
               onChange={(v) => {
                 const value = v as SortOption;
                 updateUrl(1, search, category, value);
               }}
               options={[
-                { value: "alphabetAsc", label: "Tên A → Z" },
-                { value: "alphabetDesc", label: "Tên Z → A" },
-                { value: "dateDesc", label: "Mới nhất" },
-                { value: "dateAsc", label: "Cũ nhất" },
+                { value: "alphabetAsc", label: "Name A → Z" },
+                { value: "alphabetDesc", label: "Name Z → A" },
+                { value: "dateDesc", label: "Newest" },
+                { value: "dateAsc", label: "Oldest" },
               ]}
-              placeholder="Chọn cách sắp xếp"
+              placeholder="Choose sort order"
             />
           </label>
         </div>
       </div>
 
       {loading ? (
-        <LoadingBlock label="Đang mở sổ tay món ngon..." />
+        <LoadingBlock label="Opening the recipe notebook..." />
       ) : error ? (
         <div className="notice-danger">{error}</div>
       ) : current.length === 0 ? (
         <div className="notice-info">
-          <strong>Chưa có công thức phù hợp.</strong>
-          <span>Thử đổi từ khóa hoặc chọn “Tất cả danh mục”.</span>
+          <strong>No matching recipes yet.</strong>
+          <span>Try changing the keyword or choose “All categories”.</span>
         </div>
       ) : (
         <>
           <div className="mb-4 text-sm text-muted">
-            Hiển thị <strong className="text-ink">{current.length}</strong> /{" "}
-            {filtered.length} công thức
+            Showing <strong className="text-ink">{current.length}</strong> /{" "}
+            {filtered.length} recipes
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {current.map((recipe) => (

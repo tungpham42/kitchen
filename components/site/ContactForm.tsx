@@ -46,7 +46,7 @@ function buildMailto(to: string, subject: string, body: string) {
   let url = make(body);
   if (url.length <= MAX_MAILTO_LENGTH) return { url, truncated: false };
 
-  const note = "\n\n[...] (nội dung đầy đủ đã được sao chép, hãy dán vào đây)";
+  const note = "\n\n[...] (the full message has been copied, please paste it here)";
   let cut = body.length;
   while (
     cut > 0 &&
@@ -70,9 +70,9 @@ function buildDraft(
     message.trim(),
     "",
     "—",
-    `Họ tên: ${cleanName}`,
+    `Name: ${cleanName}`,
     `Email: ${email.trim()}`,
-    `Chủ đề: ${topic}`,
+    `Topic: ${topic}`,
   ].join("\n");
   const { url, truncated } = buildMailto(TO_EMAIL, subject, body);
   return { to: TO_EMAIL, subject, body, mailto: url, truncated };
@@ -161,7 +161,7 @@ export default function ContactForm() {
 
     if (!TO_EMAIL) {
       setErrors({
-        form: "Chưa cấu hình email nhận thư (NEXT_PUBLIC_CONTACT_EMAIL). Vui lòng thử lại sau.",
+        form: "The receiving email address (NEXT_PUBLIC_CONTACT_EMAIL) is not configured. Please try again later.",
       });
       return;
     }
@@ -187,7 +187,7 @@ export default function ContactForm() {
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="contact-name" className="form-label">
-            <Icon name="user" size={16} /> Họ tên
+            <Icon name="user" size={16} /> Full name
           </label>
           <input
             id="contact-name"
@@ -205,14 +205,14 @@ export default function ContactForm() {
             aria-describedby={errors.name ? "contact-name-error" : undefined}
             maxLength={80}
             autoComplete="name"
-            placeholder="Nguyễn Văn A"
+            placeholder="John Smith"
             required
           />
           <FieldError id="contact-name-error" text={errors.name} />
         </div>
         <div>
           <label htmlFor="contact-email" className="form-label">
-            <Icon name="mail" size={16} /> Email của bạn
+            <Icon name="mail" size={16} /> Your email
           </label>
           <input
             id="contact-email"
@@ -231,7 +231,7 @@ export default function ContactForm() {
             aria-describedby={errors.email ? "contact-email-error" : undefined}
             maxLength={120}
             autoComplete="email"
-            placeholder="ban@example.com"
+            placeholder="you@example.com"
             required
           />
           <FieldError id="contact-email-error" text={errors.email} />
@@ -240,22 +240,22 @@ export default function ContactForm() {
 
       <div>
         <label htmlFor="contact-topic" className="form-label">
-          <Icon name="tag" size={16} /> Chủ đề
+          <Icon name="tag" size={16} /> Topic
         </label>
         <ThemedSelect
           id="contact-topic"
           name="topic"
-          ariaLabel="Chọn chủ đề"
+          ariaLabel="Select a topic"
           value={topic}
           onChange={(value) => setTopic(value)}
           options={[...CONTACT_TOPICS.map((t) => ({ value: t, label: t }))]}
-          placeholder="Chọn chủ đề"
+          placeholder="Select a topic"
         />
       </div>
 
       <div>
         <label htmlFor="contact-message" className="form-label">
-          <Icon name="comment" size={16} /> Nội dung
+          <Icon name="comment" size={16} /> Message
         </label>
         <textarea
           id="contact-message"
@@ -274,13 +274,13 @@ export default function ContactForm() {
             errors.message ? "contact-message-error" : undefined
           }
           maxLength={MAX_MESSAGE}
-          placeholder="Bạn muốn nhắn gì với chúng tôi?"
+          placeholder="What would you like to tell us?"
           required
         />
         <FieldError id="contact-message-error" text={errors.message} />
         <div className="mt-1 text-right text-xs text-muted">
           {message.trim().length < MIN_MESSAGE
-            ? `Tối thiểu ${MIN_MESSAGE} ký tự · `
+            ? `Minimum ${MIN_MESSAGE} characters · `
             : ""}
           {message.length}/{MAX_MESSAGE}
         </div>
@@ -291,19 +291,18 @@ export default function ContactForm() {
       {draft && (
         <Alert tone="success">
           <p>
-            Chúng tôi đã mở ứng dụng email của bạn với nội dung soạn sẵn. Hãy
-            nhấn <b>Send</b> trong ứng dụng email để hoàn tất.
+            We have opened your email app with a pre-filled message. Please press <b>Send</b> in the email app to finish.
           </p>
           {draft.truncated && (
             <p className="mt-2">
-              Nội dung khá dài nên chỉ một phần được điền sẵn.{" "}
+              The message is quite long, so only part of it was pre-filled.{" "}
               {copied
-                ? "Bản đầy đủ đã được sao chép, hãy dán (Ctrl+V) vào thư."
-                : "Hãy dùng nút “Sao chép nội dung” bên dưới rồi dán vào thư."}
+                ? "The full version has been copied; paste it (Ctrl+V) into the email."
+                : "Use the “Copy message” button below, then paste it into the email."}
             </p>
           )}
           <p className="mt-3 text-sm">
-            Không thấy ứng dụng email mở ra? Hãy chọn một cách khác:
+            Email app did not open? Choose another way:
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             {webmailLinks(draft).map((l) => (
@@ -318,30 +317,30 @@ export default function ContactForm() {
               </a>
             ))}
             <a href={draft.mailto} className={fallbackBtn}>
-              Thử lại ứng dụng email
+              Try the email app again
             </a>
             <button type="button" onClick={handleCopy} className={fallbackBtn}>
-              Sao chép nội dung
+              Copy message
             </button>
           </div>
           <p className="mt-3 text-sm">
-            Hoặc tự gửi thư tới <b>{draft.to}</b>.
+            Or send an email yourself to <b>{draft.to}</b>.
           </p>
           {copied === true && (
             <p className="mt-1 text-sm" role="status">
-              Đã sao chép vào clipboard.
+              Copied to clipboard.
             </p>
           )}
           {copied === false && (
             <p className="mt-1 text-sm" role="status">
-              Không thể sao chép tự động, vui lòng chép thủ công.
+              Could not copy automatically; please copy it manually.
             </p>
           )}
         </Alert>
       )}
 
       <button type="submit" className="btn-primary w-full sm:w-auto">
-        <Icon name="send" size={17} /> Mở ứng dụng email để gửi
+        <Icon name="send" size={17} /> Open email app to send
       </button>
     </form>
   );

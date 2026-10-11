@@ -12,7 +12,7 @@ type Props = {
   sizes: string;
   priority?: boolean;
   className?: string;
-  /** Hiển thị khi không có ảnh và cũng không có video YouTube hợp lệ. */
+  /** Displayed when there is no image and no valid YouTube video. */
   fallback: ReactNode;
 };
 
@@ -35,7 +35,7 @@ function Inner({
       priority={priority}
       sizes={sizes}
       className={className}
-      // Ảnh YouTube đã được tối ưu sẵn, không cần cấu hình remotePatterns
+      // YouTube thumbnails are already optimized, so remotePatterns configuration is unnecessary.
       unoptimized={src.startsWith("https://i.ytimg.com/")}
       onError={() => setIndex((i) => i + 1)}
     />
@@ -43,8 +43,8 @@ function Inner({
 }
 
 /**
- * Ảnh món ăn: ưu tiên imageUrl; nếu trống hoặc lỗi thì dùng ảnh bìa video YouTube
- * (maxres → hqdefault); cuối cùng mới hiện `fallback`.
+ * Recipe image: prefer imageUrl; if it is empty or fails to load, use the YouTube video thumbnail
+ * (maxres → hqdefault); show `fallback` only if those options are unavailable.
  */
 export default function RecipeImage({ imageUrl, youtubeUrl, ...rest }: Props) {
   const candidates = [

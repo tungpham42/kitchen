@@ -27,7 +27,7 @@ export default function BackToTop() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      aria-label="Về đầu trang"
+      aria-label="Back to top"
       className="fixed right-5 z-40 grid size-12 place-items-center rounded-2xl bg-lacquer text-ivory shadow-lg transition hover:-translate-y-1 hover:bg-lacquer-dark"
       style={{
         // On mobile/tablet, sit above the fixed bottom search bar (~5rem tall)

@@ -22,6 +22,6 @@ export default function RequireAuth({
   }, [loading, currentUser, isAdmin, adminOnly, router]);
 
   if (loading || !currentUser || (adminOnly && !isAdmin))
-    return <LoadingBlock label="Đang kiểm tra quyền truy cập..." />;
+    return <LoadingBlock label="Checking access permissions..." />;
   return <>{children}</>;
 }

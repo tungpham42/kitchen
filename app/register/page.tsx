@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: "Sign up để chia sẻ công thức và lưu giữ món ăn Việt.",
     images: [
       {
-        url: "/dang-ky.jpg",
+        url: "/register.jpg",
         width: 1200,
         height: 630,
         alt: "Sign up để chia sẻ công thức và lưu giữ món ăn Việt.",

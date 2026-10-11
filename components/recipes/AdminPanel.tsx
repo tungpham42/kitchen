@@ -50,7 +50,7 @@ function formatDate(value?: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
 
-  return new Intl.DateTimeFormat("vi-VN", {
+  return new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(date);
@@ -129,11 +129,11 @@ function AdminInner() {
 
       if (failedCommentLoads > 0) {
         setError(
-          `Không thể tải bình luận của ${failedCommentLoads} công thức. Bạn có thể tải lại để thử lại.`,
+          `Could not load comments for ${failedCommentLoads} recipe(s). You can refresh to try again.`,
         );
       }
     } catch {
-      setError("Không thể tải dữ liệu quản trị. Vui lòng thử lại.");
+      setError("Could not load admin data. Please try again.");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -315,9 +315,9 @@ function AdminInner() {
 
   async function removeRecipe(id: string) {
     const recipe = recipes.find((item) => item.id === id);
-    const title = recipe?.title ?? "công thức này";
+    const title = recipe?.title ?? "this recipe";
 
-    if (!window.confirm(`Delete ${title}? Hành động không thể hoàn tác.`)) return;
+    if (!window.confirm(`Delete ${title}? This action cannot be undone.`)) return;
 
     setDeletingRecipeId(id);
     setError("");
@@ -330,7 +330,7 @@ function AdminInner() {
         clearCommentFilters();
       }
     } catch {
-      setError("Không thể xóa công thức.");
+      setError("Could not delete the recipe.");
     } finally {
       setDeletingRecipeId(null);
     }
@@ -341,10 +341,10 @@ function AdminInner() {
       (item) => item.recipeId === recipeId && item.id === commentId,
     );
 
-    const author = comment?.username || "người dùng";
+    const author = comment?.username || "user";
     if (
       !window.confirm(
-        `Delete bình luận của ${author}? Hành động không thể hoàn tác.`,
+        `Delete ${author}'s comment? This action cannot be undone.`,
       )
     ) {
       return;
@@ -369,7 +369,7 @@ function AdminInner() {
         ),
       );
     } catch {
-      setError("Không thể xóa bình luận.");
+      setError("Could not delete the comment.");
     } finally {
       setDeletingCommentKey(null);
     }
@@ -380,12 +380,11 @@ function AdminInner() {
       <header className="mb-7 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <span className="eyebrow">
-            <Icon name="settings" size={15} /> Phòng bếp quản trị
+            <Icon name="settings" size={15} /> Admin kitchen
           </span>
-          <h1 className="section-title">Admin nội dung</h1>
+          <h1 className="section-title">Content admin</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-            Quản lý công thức, theo dõi hoạt động bình luận và dọn dẹp nội dung
-            không phù hợp trong cộng đồng.
+            Manage recipes, monitor comment activity, and clean up inappropriate content in the community.
           </p>
         </div>
 
@@ -400,7 +399,7 @@ function AdminInner() {
             size={16}
             className={refreshing ? "animate-spin" : ""}
           />
-          {refreshing ? "Đang tải lại..." : "Tải lại dữ liệu"}
+          {refreshing ? "Refreshing..." : "Refresh data"}
         </button>
       </header>
 
@@ -411,42 +410,42 @@ function AdminInner() {
       )}
 
       {loading ? (
-        <LoadingBlock label="Đang tải dữ liệu quản trị..." />
+        <LoadingBlock label="Loading admin data..." />
       ) : (
         <>
           <section
-            aria-label="Tổng quan"
+            aria-label="Overview"
             className="mb-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-5"
           >
             <StatCard
               icon="book"
               label="Recipes"
               value={stats.recipes}
-              detail="Tổng số công thức"
+              detail="Total recipes"
             />
             <StatCard
               icon="comment"
-              label="Bình luận"
+              label="Comments"
               value={stats.comments}
-              detail="Tổng số bình luận"
+              detail="Total comments"
             />
             <StatCard
               icon="calendar"
-              label="7 ngày qua"
+              label="Last 7 days"
               value={stats.commentsLast7Days}
-              detail="Bình luận mới"
+              detail="New comments"
             />
             <StatCard
               icon="eye"
-              label="Có tương tác"
+              label="With engagement"
               value={stats.commentedRecipes}
-              detail="Recipes có bình luận"
+              detail="Recipes with comments"
             />
             <StatCard
               icon="comment-off"
-              label="Chưa có bình luận"
+              label="No comments yet"
               value={stats.recipesWithoutComments}
-              detail="Cần thêm tương tác"
+              detail="Needs more engagement"
             />
           </section>
 
@@ -463,7 +462,7 @@ function AdminInner() {
                 active={activeTab === "comments"}
                 count={filteredComments.length}
                 icon="comment"
-                label="Bình luận"
+                label="Comments"
                 onClick={() => setActiveTab("comments")}
               />
             </div>
@@ -530,7 +529,7 @@ function StatCard({
             {label}
           </div>
           <div className="mt-2 font-serif text-3xl font-bold text-lacquer">
-            {value.toLocaleString("vi-VN")}
+            {value.toLocaleString("en-US")}
           </div>
         </div>
         <span className="grid size-10 shrink-0 place-items-center rounded-2xl bg-gold/10 text-turmeric-700">
@@ -574,7 +573,7 @@ function TabButton({
           active ? "bg-ivory/15 text-ivory" : "bg-cream text-ink"
         }`}
       >
-        {count.toLocaleString("vi-VN")}
+        {count.toLocaleString("en-US")}
       </span>
     </button>
   );
@@ -619,58 +618,58 @@ function RecipesSection({
         <div className="grid gap-3 lg:grid-cols-[1.6fr_1fr_1fr]">
           <label>
             <span className="form-label">
-              <Icon name="search" size={15} /> Tìm công thức
+              <Icon name="search" size={15} /> Search recipes
             </span>
             <input
               value={recipeSearch}
               onChange={(event) => onSearch(event.target.value)}
               className="form-input"
-              placeholder="Tên, mô tả hoặc slug..."
+              placeholder="Name, description, or slug..."
             />
           </label>
 
           <label>
-            <span className="form-label">Danh mục</span>
+            <span className="form-label">Category</span>
             <ThemedSelect
               name="category"
-              ariaLabel="Danh mục"
+              ariaLabel="Category"
               value={recipeCategory}
               onChange={(value) => onCategory(value)}
               options={[
-                { value: "all", label: "Tất cả danh mục" },
+                { value: "all", label: "All categories" },
                 ...RECIPE_CATEGORIES.map((category) => ({
                   value: category,
                   label: categoryLabel(category),
                 })),
               ]}
-              placeholder="Chọn danh mục"
+              placeholder="Select a category"
             />
           </label>
 
           <label>
-            <span className="form-label">Sắp xếp</span>
+            <span className="form-label">Sort</span>
             <ThemedSelect
               name="sortBy"
-              ariaLabel="Sắp xếp"
+              ariaLabel="Sort"
               value={recipeSort}
               onChange={(value) => onSort(value as RecipeSort)}
               options={[
-                { value: "newest", label: "Mới nhất" },
-                { value: "oldest", label: "Cũ nhất" },
-                { value: "alphabetAsc", label: "Tên A → Z" },
-                { value: "alphabetDesc", label: "Tên Z → A" },
-                { value: "commentsDesc", label: "Nhiều bình luận nhất" },
-                { value: "commentsAsc", label: "Ít bình luận nhất" },
+                { value: "newest", label: "Newest" },
+                { value: "oldest", label: "Oldest" },
+                { value: "alphabetAsc", label: "Name A → Z" },
+                { value: "alphabetDesc", label: "Name Z → A" },
+                { value: "commentsDesc", label: "Most comments" },
+                { value: "commentsAsc", label: "Fewest comments" },
               ]}
-              placeholder="Chọn cách sắp xếp"
+              placeholder="Choose sort order"
             />
           </label>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
           <span>
-            Đang hiển thị <strong className="text-ink">{filteredCount}</strong>{" "}
-            công thức phù hợp.
+            Showing <strong className="text-ink">{filteredCount}</strong>{" "}
+            matching recipes.
           </span>
           {recipeSearch || recipeCategory !== "all" ? (
             <button
@@ -681,7 +680,7 @@ function RecipesSection({
                 onCategory("all");
               }}
             >
-              Delete bộ lọc
+              Clear filters
             </button>
           ) : null}
         </div>
@@ -709,7 +708,7 @@ function RecipesSection({
                 <div className="mt-3 rounded-2xl border border-border bg-card p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-muted">
-                      <Icon name="comment" size={14} /> Bình luận
+                      <Icon name="comment" size={14} /> Comments
                       <span className="rounded-full bg-cream px-2 py-0.5 text-ink">
                         {recipe.comments.length}
                       </span>
@@ -720,7 +719,7 @@ function RecipesSection({
                         className="text-xs font-bold text-lacquer hover:underline"
                         onClick={() => onShowAllComments(recipe.id)}
                       >
-                        Quản lý tất cả
+                        Manage all
                       </button>
                     ) : null}
                   </div>
@@ -746,13 +745,13 @@ function RecipesSection({
                           className="mt-1 w-full rounded-xl border border-dashed border-border px-3 py-2 text-xs font-bold text-muted transition hover:border-lacquer/30 hover:text-lacquer"
                           onClick={() => onShowAllComments(recipe.id)}
                         >
-                          See more {recipe.comments.length - 3} bình luận
+                          See {recipe.comments.length - 3} more comments
                         </button>
                       ) : null}
                     </div>
                   ) : (
                     <div className="mt-3 rounded-xl bg-cream/50 p-3 text-xs text-muted">
-                      Chưa có bình luận.
+                      No comments yet.
                     </div>
                   )}
                 </div>
@@ -770,8 +769,8 @@ function RecipesSection({
       ) : (
         <EmptyState
           icon="book"
-          title="Not found công thức"
-          description="Hãy thử thay đổi từ khóa hoặc bộ lọc danh mục."
+          title="No recipes found"
+          description="Try changing your keywords or category filter."
         />
       )}
     </section>
@@ -796,7 +795,7 @@ function CommentPreview({
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <strong className="text-ink">
-            {comment.username || "Người dùng"}
+            {comment.username || "User"}
           </strong>
           <span className="text-xs text-muted">
             {formatDate(comment.createdAt)}
@@ -809,8 +808,8 @@ function CommentPreview({
         className="icon-button icon-button-danger shrink-0"
         disabled={deleting}
         onClick={onDelete}
-        aria-label="Delete bình luận"
-        title="Delete bình luận"
+        aria-label="Delete comment"
+        title="Delete comment"
       >
         <Icon name="comment-off" size={16} />
       </button>
@@ -855,13 +854,13 @@ function CommentsSection({
         <div className="grid gap-3 lg:grid-cols-[1.6fr_1fr_1fr]">
           <label>
             <span className="form-label">
-              <Icon name="search" size={15} /> Tìm bình luận
+              <Icon name="search" size={15} /> Search comments
             </span>
             <input
               value={search}
               onChange={(event) => onSearch(event.target.value)}
               className="form-input"
-              placeholder="Nội dung, người dùng, ID hoặc công thức..."
+              placeholder="Content, user, ID, or recipe..."
             />
           </label>
 
@@ -873,7 +872,7 @@ function CommentsSection({
               value={recipeId}
               onChange={onRecipe}
               options={[
-                { value: "all", label: "Tất cả công thức" },
+                { value: "all", label: "All recipes" },
                 ...recipes
                   .filter((recipe) => recipe.comments.length > 0)
                   .sort((a, b) => a.title.localeCompare(b.title, "vi"))
@@ -882,32 +881,32 @@ function CommentsSection({
                     label: recipe.title,
                   })),
               ]}
-              placeholder="Chọn cách sắp xếp"
+              placeholder="Choose sort order"
             />
           </label>
 
           <label>
-            <span className="form-label">Sắp xếp</span>
+            <span className="form-label">Sort</span>
             <ThemedSelect
               name="sortBy"
-              ariaLabel="Sắp xếp"
+              ariaLabel="Sort"
               value={sort}
               onChange={(value) => onSort(value as CommentSort)}
               options={[
-                { value: "newest", label: "Mới nhất" },
-                { value: "oldest", label: "Cũ nhất" },
-                { value: "userAsc", label: "Tên người dùng A → Z" },
-                { value: "recipeAsc", label: "Tên công thức A → Z" },
+                { value: "newest", label: "Newest" },
+                { value: "oldest", label: "Oldest" },
+                { value: "userAsc", label: "Username A → Z" },
+                { value: "recipeAsc", label: "Recipe name A → Z" },
               ]}
-              placeholder="Chọn cách sắp xếp"
+              placeholder="Choose sort order"
             />
           </label>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
           <span>
-            Đang hiển thị <strong className="text-ink">{totalFiltered}</strong>{" "}
-            bình luận phù hợp.
+            Showing <strong className="text-ink">{totalFiltered}</strong>{" "}
+            matching comments.
           </span>
           {search || recipeId !== "all" || sort !== "dateDesc" ? (
             <button
@@ -915,7 +914,7 @@ function CommentsSection({
               className="font-bold text-lacquer hover:underline"
               onClick={onClear}
             >
-              Đặt lại bộ lọc
+              Reset filters
             </button>
           ) : null}
         </div>
@@ -933,7 +932,7 @@ function CommentsSection({
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                       <span className="font-bold text-ink">
-                        {comment.username || "Người dùng"}
+                        {comment.username || "User"}
                       </span>
                       {comment.userId ? (
                         <span className="rounded-full bg-cream px-2 py-0.5 text-xs text-muted">
@@ -941,7 +940,7 @@ function CommentsSection({
                         </span>
                       ) : (
                         <span className="rounded-full bg-gold/10 px-2 py-0.5 text-xs font-bold text-turmeric-700">
-                          Khách
+                          Guest
                         </span>
                       )}
                       <span className="text-xs text-muted">
@@ -976,8 +975,8 @@ function CommentsSection({
                   >
                     <Icon name="comment-off" size={16} />
                     {deletingCommentKey === `${comment.recipeId}:${comment.id}`
-                      ? "Đang xóa..."
-                      : "Delete bình luận"}
+                      ? "Deleting..."
+                      : "Delete comment"}
                   </button>
                 </div>
               </article>
@@ -994,8 +993,8 @@ function CommentsSection({
       ) : (
         <EmptyState
           icon="comment"
-          title="Không có bình luận phù hợp"
-          description="Thử thay đổi từ khóa, công thức hoặc cách sắp xếp."
+          title="No matching comments"
+          description="Try changing your keywords, recipe, or sort order."
         />
       )}
     </section>

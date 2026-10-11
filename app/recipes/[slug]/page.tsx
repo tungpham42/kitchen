@@ -63,12 +63,12 @@ function buildKeywords(recipe: Recipe): string[] {
 
   return unique([
     recipe.title,
-    "công thức",
-    "công thức món ăn",
-    "nấu ăn",
-    "món ngon",
+    "recipe",
+    "dish recipe",
+    "cooking",
+    "delicious food",
     category,
-    category ? `công thức ${category}` : "",
+    category ? `${category} recipe` : "",
     ...recipe.ingredients.slice(0, 8),
   ]).slice(0, 15);
 }
@@ -81,8 +81,8 @@ export async function generateMetadata({
 
   if (!recipe) {
     return {
-      title: "Not found công thức",
-      description: `Recipes món ăn không tồn tại hoặc đã được gỡ khỏi ${SITE_NAME}.`,
+      title: "Recipe not found",
+      description: `This recipe does not exist or has been removed from ${SITE_NAME}.`,
       robots: {
         index: false,
         follow: true,
@@ -97,7 +97,7 @@ export async function generateMetadata({
   const title = recipe.title;
   const description = truncate(
     recipe.description ||
-      `Guide nấu ${recipe.title}${category ? `, thuộc nhóm ${category}` : ""}, cùng nguyên liệu và các bước thực hiện chi tiết.`,
+      `How to cook ${recipe.title}${category ? `, in the ${category} category` : ""}, with detailed ingredients and steps.`,
     160,
   );
 
@@ -107,7 +107,7 @@ export async function generateMetadata({
     description,
     keywords: buildKeywords(recipe),
     applicationName: SITE_NAME,
-    category: category || "Recipes món ăn",
+    category: category || "Dish recipes",
     alternates: {
       canonical,
     },
@@ -127,7 +127,7 @@ export async function generateMetadata({
       description,
       url: canonical,
       siteName: SITE_NAME,
-      locale: "vi_VN",
+      locale: "en_US",
       type: "article",
       ...(imageUrl
         ? {
@@ -312,7 +312,7 @@ function RecipeJsonLd({ recipe }: { recipe: Recipe }) {
     .filter(Boolean)
     .map((text, index) => ({
       "@type": "HowToStep",
-      name: `Bước ${index + 1}`,
+      name: `Step ${index + 1}`,
       text,
       ...(canonical ? { url: `${canonical}#recipe-step-${index + 1}` } : {}),
     }));

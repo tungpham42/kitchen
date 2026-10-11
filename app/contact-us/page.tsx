@@ -5,22 +5,22 @@ import Icon, { type IconName } from "@/components/ui/Icon";
 import { CONTACT, phoneHref } from "@/lib/contact";
 import { SITE_NAME } from "@/lib/seo";
 
-const description = `Liên hệ ${SITE_NAME} để góp ý, nhận hỗ trợ hoặc trao đổi hợp tác. Chúng tôi luôn sẵn lòng lắng nghe.`;
+const description = `Contact ${SITE_NAME} for feedback, support, or to discuss collaboration. We are always glad to listen.`;
 
 export const metadata: Metadata = {
-  title: "Liên hệ",
+  title: "Contact",
   description,
-  alternates: { canonical: "/lien-he" },
+  alternates: { canonical: "/contact-us" },
   openGraph: {
-    title: "Liên hệ",
+    title: "Contact",
     description,
-    url: "/lien-he",
+    url: "/contact-us",
     images: [
       {
-        url: "/lien-he.jpg",
+        url: "/contact-us.jpg",
         width: 1200,
         height: 630,
-        alt: `Liên hệ ${SITE_NAME}`,
+        alt: `Contact ${SITE_NAME}`,
       },
     ],
   },
@@ -46,16 +46,16 @@ function buildItems(): Item[] {
   if (CONTACT.phone)
     items.push({
       icon: "phone",
-      label: "Điện thoại",
+      label: "Phone",
       value: CONTACT.phone,
       href: phoneHref(CONTACT.phone),
     });
   if (CONTACT.address)
-    items.push({ icon: "map-pin", label: "Địa chỉ", value: CONTACT.address });
+    items.push({ icon: "map-pin", label: "Address", value: CONTACT.address });
   if (CONTACT.hours)
     items.push({
       icon: "calendar",
-      label: "Giờ phản hồi",
+      label: "Response hours",
       value: CONTACT.hours,
     });
   return items;
@@ -80,19 +80,16 @@ export default function ContactPage() {
     <div className="mx-auto max-w-5xl">
       <div className="mb-8">
         <span className="eyebrow">
-          <Icon name="mail" size={15} /> Liên hệ
+          <Icon name="mail" size={15} /> Contact
         </span>
-        <h1 className="section-title">Chúng tôi luôn sẵn lòng lắng nghe</h1>
+        <h1 className="section-title">We are always glad to listen</h1>
         <p className="mt-2 max-w-2xl text-sm leading-7 text-muted">
-          Có câu hỏi, góp ý hay muốn hợp tác? Hãy gửi lời nhắn cho{" "}
-          {CONTACT.name}. Bạn cũng có thể xem{" "}
-          <Link
-            href="/guide"
-            className="font-semibold text-lacquer underline"
-          >
-            hướng dẫn sử dụng
+          Have a question, feedback, or want to collaborate? Send a message to{" "}
+          {CONTACT.name}. You can also read the{" "}
+          <Link href="/guide" className="font-semibold text-lacquer underline">
+            user guide
           </Link>{" "}
-          để tìm nhanh câu trả lời.
+          to find quick answers.
         </p>
       </div>
 
@@ -105,15 +102,15 @@ export default function ContactPage() {
             id="contact-form-title"
             className="mb-5 font-serif text-2xl font-bold text-lacquer"
           >
-            Send lời nhắn
+            Send a message
           </h2>
           <ContactForm />
         </section>
 
-        <aside className="space-y-4" aria-label="Thông tin liên hệ">
+        <aside className="space-y-4" aria-label="Contact information">
           <div className="rounded-3xl border border-border bg-card p-5 shadow-sm sm:p-6">
             <h2 className="font-serif text-xl font-bold text-lacquer">
-              Thông tin liên hệ
+              Contact information
             </h2>
             {items.length > 0 ? (
               <ul className="mt-4 space-y-4">
@@ -144,7 +141,7 @@ export default function ContactPage() {
               </ul>
             ) : (
               <p className="mt-3 text-sm text-muted">
-                Vui lòng sử dụng biểu mẫu để gửi lời nhắn cho chúng tôi.
+                Please use the form to send us a message.
               </p>
             )}
           </div>
@@ -152,7 +149,7 @@ export default function ContactPage() {
           {socials.length > 0 && (
             <div className="rounded-3xl border border-border bg-card p-5 shadow-sm sm:p-6">
               <h2 className="font-serif text-xl font-bold text-lacquer">
-                Kết nối
+                Connect
               </h2>
               <div className="mt-4 flex flex-wrap gap-2">
                 {socials.map((s) => (
@@ -171,12 +168,9 @@ export default function ContactPage() {
           )}
 
           <div className="rounded-3xl border border-gold/30 bg-gold/10 p-5 text-sm leading-7 text-muted sm:p-6">
-            Muốn biết thêm về chúng tôi?{" "}
-            <Link
-              href="/gioi-thieu"
-              className="font-bold text-lacquer underline"
-            >
-              Đọc phần giới thiệu
+            Want to know more about us?{" "}
+            <Link href="/about-us" className="font-bold text-lacquer underline">
+              Read the About page
             </Link>
             .
           </div>

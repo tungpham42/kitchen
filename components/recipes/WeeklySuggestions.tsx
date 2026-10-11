@@ -33,20 +33,20 @@ type IngredientLine = {
 };
 
 const DAYS = [
-  "Thứ Hai",
-  "Thứ Ba",
-  "Thứ Tư",
-  "Thứ Năm",
-  "Thứ Sáu",
-  "Thứ Bảy",
-  "Chủ Nhật",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
 ];
 const DAYS_SHORT = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
 const MEALS: Array<{ key: MealSlot; label: string; hint: string }> = [
-  { key: "Breakfast", label: "Bữa sáng", hint: "Gọn nhẹ, đủ năng lượng" },
-  { key: "Lunch", label: "Bữa trưa", hint: "Bữa chính trong ngày" },
-  { key: "Dinner", label: "Bữa tối", hint: "Ngon miệng, vừa bụng" },
+  { key: "Breakfast", label: "Breakfast", hint: "Light yet energizing" },
+  { key: "Lunch", label: "Lunch", hint: "The main meal of the day" },
+  { key: "Dinner", label: "Dinner", hint: "Tasty and satisfying" },
 ];
 const TOTAL_SLOTS = DAYS.length * MEALS.length;
 
@@ -54,12 +54,12 @@ const PLAN_STORAGE_PREFIX = "softmeal-week-plan-v1:";
 const SHOPPING_STORAGE_PREFIX = "softmeal-shopping-checked-v1:";
 
 const NUTRIENTS: Array<{ key: NutrientKey; label: string }> = [
-  { key: "calories", label: "Năng lượng" },
-  { key: "proteinContent", label: "Chất đạm" },
-  { key: "carbohydrateContent", label: "Tinh bột" },
-  { key: "fatContent", label: "Chất béo" },
-  { key: "fiberContent", label: "Chất xơ" },
-  { key: "sodiumContent", label: "Natri" },
+  { key: "calories", label: "Calories" },
+  { key: "proteinContent", label: "Protein" },
+  { key: "carbohydrateContent", label: "Carbohydrates" },
+  { key: "fatContent", label: "Fat" },
+  { key: "fiberContent", label: "Fiber" },
+  { key: "sodiumContent", label: "Sodium" },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -264,7 +264,7 @@ function parseIngredient(
 function formatAmount(amount: number): string {
   return Number.isInteger(amount)
     ? String(amount)
-    : amount.toLocaleString("vi-VN", { maximumFractionDigits: 2 });
+    : amount.toLocaleString("en-US", { maximumFractionDigits: 2 });
 }
 
 /** Show 1500 g as "1,5 kg" and 1200 ml as "1,2 l" for readability. */
@@ -380,7 +380,7 @@ function NutrientGrid({
             <p
               className={`mt-1 break-words text-sm font-bold ${value ? "text-ink" : "font-normal text-muted"}`}
             >
-              {value ?? "Chưa có dữ liệu"}
+              {value ?? "No data yet"}
             </p>
           </div>
         );
@@ -447,18 +447,18 @@ function MealCard({
         </div>
         <div className="flex min-w-0 flex-col gap-2 sm:flex-row">
           <label className="sr-only" htmlFor={`${idPrefix}-select`}>
-            Chọn món cho {slot.label.toLowerCase()}
+            Choose a dish for {slot.label.toLowerCase()}
           </label>
           <ThemedSelect
             id={`${idPrefix}-select`}
             value={recipeId}
             onChange={onChange}
-            placeholder="Chưa chọn món"
+            placeholder="No dish selected"
             options={
               shouldGroupSuggestions
-                ? [{ value: "", label: "Chưa chọn món" }]
+                ? [{ value: "", label: "No dish selected" }]
                 : [
-                    { value: "", label: "Chưa chọn món" },
+                    { value: "", label: "No dish selected" },
                     ...recipes.map((r) => ({
                       value: String(r.id),
                       label: optionLabel(r),
@@ -469,14 +469,14 @@ function MealCard({
               shouldGroupSuggestions
                 ? [
                     {
-                      label: `Gợi ý cho ${slot.label.toLowerCase()}`,
+                      label: `Suggestions for ${slot.label.toLowerCase()}`,
                       options: suggested.map((r) => ({
                         value: String(r.id),
                         label: optionLabel(r),
                       })),
                     },
                     {
-                      label: "Các món khác",
+                      label: "Other dishes",
                       options: others.map((r) => ({
                         value: String(r.id),
                         label: optionLabel(r),
@@ -491,20 +491,21 @@ function MealCard({
               type="button"
               onClick={onShuffle}
               className="btn-secondary"
-              title="Đổi sang một món ngẫu nhiên khác"
+              title="Swap for another random dish"
             >
               <Icon name="refresh" size={16} />
-              <span className="ml-1">Đổi món</span>
+              <span className="ml-1">Swap dish</span>
             </button>
             {recipeId && (
               <button
                 type="button"
                 onClick={onClear}
                 className="btn-secondary"
-                aria-label={`Bỏ món ${slot.label.toLowerCase()}`}
-                title="Bỏ món này"
+                aria-label={`Remove ${slot.label.toLowerCase()} dish`}
+                title="Remove this dish"
               >
-                Bỏ
+                Remove
+
               </button>
             )}
           </div>
@@ -527,8 +528,7 @@ function MealCard({
                 </p>
               )}
               <p className="mt-2 text-xs text-muted">
-                {recipe.ingredients.length} nguyên liệu · {recipe.steps.length}{" "}
-                bước nấu
+                {recipe.ingredients.length} ingredients · {recipe.steps.length}{" "} steps
               </p>
             </div>
             <button
@@ -537,7 +537,7 @@ function MealCard({
               className="btn-secondary shrink-0 self-start"
               aria-expanded={open}
             >
-              {open ? "Thu gọn" : "Xem cách nấu"}
+              {open ? "Collapse" : "See cooking steps"}
             </button>
           </div>
 
@@ -560,13 +560,13 @@ function MealCard({
                   </ul>
                 ) : (
                   <p className="mt-2 text-sm text-muted">
-                    Chưa có danh sách nguyên liệu.
+                    No ingredient list yet.
                   </p>
                 )}
               </div>
               <div>
                 <h3 className="font-serif text-lg font-bold text-lacquer">
-                  Các bước chế biến
+                  Preparation steps
                 </h3>
                 {recipe.steps.length ? (
                   <ol className="mt-2 space-y-3 text-sm leading-6 text-ink">
@@ -581,28 +581,27 @@ function MealCard({
                   </ol>
                 ) : (
                   <p className="mt-2 text-sm text-muted">
-                    Chưa có hướng dẫn chế biến.
+                    No preparation instructions yet.
                   </p>
                 )}
               </div>
               <div className="rounded-2xl border border-border bg-card p-4 lg:col-span-2">
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                   <h3 className="font-serif text-lg font-bold text-lacquer">
-                    Dinh dưỡng được cung cấp
+                    Nutrition information provided
                   </h3>
                   <Link
                     href={`/recipes/${recipe.slug}`}
                     className="text-sm font-bold text-lacquer underline underline-offset-4"
                   >
-                    Mở trang công thức đầy đủ
+                    Open full recipe page
                   </Link>
                 </div>
                 <div className="mt-3">
                   <NutrientGrid recipe={recipe} />
                 </div>
                 <p className="mt-3 text-xs leading-5 text-muted">
-                  Dữ liệu dinh dưỡng phụ thuộc thông tin công thức do tác giả
-                  cung cấp; không tự ước tính khi thiếu dữ liệu.
+                  Nutrition data depends on the information provided by the recipe author; missing data is not estimated.
                 </p>
               </div>
             </div>
@@ -610,7 +609,7 @@ function MealCard({
         </div>
       ) : (
         <p className="mt-3 text-sm text-muted">
-          Chọn một món ở danh sách, hoặc bấm “Đổi món” để nhận gợi ý ngẫu nhiên.
+          Pick a dish from the list, or click “Swap dish” to get a random suggestion.
         </p>
       )}
     </div>
@@ -673,7 +672,7 @@ export default function WeeklySuggestions() {
         setReady(true);
       })
       .catch(() => {
-        if (alive) setError("Không thể tải công thức. Vui lòng thử lại.");
+        if (alive) setError("Could not load recipes. Please try again.");
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -768,7 +767,7 @@ export default function WeeklySuggestions() {
       notify(okMessage);
       return true;
     } catch {
-      window.prompt("Sao chép nội dung:", text);
+      window.prompt("Copy the content:", text);
       return false;
     }
   }
@@ -778,7 +777,7 @@ export default function WeeklySuggestions() {
     const previousChecked = checkedItems;
     setPlan(createPlan(recipes));
     setCheckedItems(new Set());
-    notify("Đã bốc thực đơn mới cho cả tuần.", () => {
+    notify("Generated a new menu for the whole week.", () => {
       setPlan(previous);
       setCheckedItems(previousChecked);
     });
@@ -787,7 +786,7 @@ export default function WeeklySuggestions() {
   function clearPlan() {
     const previous = plan;
     setPlan(DAYS.map((day) => ({ day, meals: blankMeals() })));
-    notify("Đã xoá toàn bộ thực đơn tuần.", () => setPlan(previous));
+    notify("Cleared the entire weekly menu.", () => setPlan(previous));
   }
 
   function setMeal(dayIndex: number, slot: MealSlot, recipeId: string) {
@@ -825,7 +824,7 @@ export default function WeeklySuggestions() {
         return { ...day, meals };
       }),
     );
-    notify("Đã điền các bữa còn trống.", () => setPlan(previous));
+    notify("Filled in the empty meals.", () => setPlan(previous));
   }
 
   function toggleShoppingItem(key: string) {
@@ -843,20 +842,20 @@ export default function WeeklySuggestions() {
     setCheckedItems(
       new Set([...checkedItems].filter((k) => !visibleKeys.has(k))),
     );
-    notify("Đã bỏ đánh dấu.", () => setCheckedItems(previous));
+    notify("Cleared all checkmarks.", () => setCheckedItems(previous));
   }
 
   async function copyShoppingList() {
     const lines = toBuy.map((i) => `[ ] ${i.label}`);
     const title =
       shoppingScope === "week"
-        ? "Danh sách đi chợ cả tuần"
-        : `Danh sách đi chợ ${DAYS[shoppingScope]}`;
+        ? "Shopping list for the week"
+        : `Shopping list for ${DAYS[shoppingScope]}`;
     const ok = await copyText(
       lines.length
         ? `${title}\n${lines.join("\n")}`
-        : "Danh sách đi chợ đang trống.",
-      "Đã sao chép phần còn cần mua.",
+        : "The shopping list is empty.",
+      "Copied the items still to buy.",
     );
     if (ok) setCopied(true);
   }
@@ -871,13 +870,13 @@ export default function WeeklySuggestions() {
         return `${day.day} (${weekDates[i]})\n${rows.join("\n")}`;
       })
       .join("\n\n");
-    copyText(`Thực đơn tuần\n\n${text}`, "Đã sao chép thực đơn tuần.");
+    copyText(`Weekly menu\n\n${text}`, "Copied the weekly menu.");
   }
 
   /* ----- early returns (after all hooks) ----- */
   if (loading)
     return (
-      <LoadingBlock label="Đang chuẩn bị thực đơn và danh sách đi chợ..." />
+      <LoadingBlock label="Preparing your menu and shopping list..." />
     );
 
   if (error)
@@ -889,7 +888,7 @@ export default function WeeklySuggestions() {
           className="btn-secondary"
           onClick={() => setReloadToken((t) => t + 1)}
         >
-          Thử lại
+          Try again
         </button>
       </div>
     );
@@ -897,10 +896,9 @@ export default function WeeklySuggestions() {
   if (!recipes.length) {
     return (
       <div className="rounded-3xl border border-border bg-card p-8 text-center">
-        <h1 className="section-title">Cùng lên thực đơn đầu tiên</h1>
+        <h1 className="section-title">Plan your first menu</h1>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-muted">
-          Chưa có công thức để xếp món. Hãy thêm vài món vào sổ tay, rồi quay
-          lại để tự động lên thực đơn, gom nguyên liệu và xem dinh dưỡng.
+          There are no recipes to plan with yet. Add a few dishes to your notebook, then come back to plan menus automatically, gather ingredients, and view nutrition.
         </p>
         <Link href="/recipes/new" className="btn-primary mt-5 inline-flex">
           Add a recipe
@@ -917,22 +915,22 @@ export default function WeeklySuggestions() {
   }> = [
     {
       key: "plan",
-      label: "Thực đơn tuần",
-      description: "Chọn món cho từng bữa",
+      label: "Weekly menu",
+      description: "Choose a dish for each meal",
       badge: `${plannedMealsCount}/${TOTAL_SLOTS}`,
     },
     {
       key: "shopping",
-      label: "Đi chợ",
-      description: "Ingredients cần mua",
+      label: "Shopping",
+      description: "Ingredients to buy",
       badge: shoppingItems.length
         ? `${checkedCount}/${shoppingItems.length}`
         : undefined,
     },
     {
       key: "nutrition",
-      label: "Dinh dưỡng",
-      description: "Xem thông tin theo từng ngày",
+      label: "Nutrition",
+      description: "View information day by day",
     },
   ];
 
@@ -946,15 +944,14 @@ export default function WeeklySuggestions() {
         <div className="absolute -right-12 -top-16 size-56 rounded-full border border-gold/20 bg-gold/5" />
         <div className="relative">
           <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-ivory/10 px-3 py-1 text-xs font-extrabold uppercase tracking-[0.15em] text-gold-light">
-            <Icon name="calendar" size={15} /> Kế hoạch bếp nhà ·{" "}
+            <Icon name="calendar" size={15} /> Home kitchen plan ·{" "}
             {DAYS[todayIndex]}, {weekDates[todayIndex]}
           </span>
           <h1 className="mt-3 max-w-3xl font-serif text-3xl font-bold leading-tight sm:text-4xl">
-            Hôm nay ăn gì? Cả tuần đã có kế hoạch.
+            What to eat today? The whole week is planned.
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-ivory/80">
-            Chọn món, gom nguyên liệu đi chợ, mở cách nấu và xem dinh dưỡng —
-            tất cả trong một nơi.
+            Choose dishes, gather ingredients for shopping, open cooking steps, and view nutrition — all in one place.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <button
@@ -966,7 +963,7 @@ export default function WeeklySuggestions() {
               }}
               className="btn-gold"
             >
-              Xem bữa hôm nay
+              View meals for today
             </button>
             <button
               type="button"
@@ -976,7 +973,7 @@ export default function WeeklySuggestions() {
               }}
               className="btn-outline-dark border-ivory/30 text-ivory hover:bg-ivory/10"
             >
-              Đi chợ cần mua gì?
+              What do I need to buy?
             </button>
           </div>
         </div>
@@ -985,7 +982,7 @@ export default function WeeklySuggestions() {
       {/* ----------------------------- Tabs ----------------------------- */}
       <nav
         role="tablist"
-        aria-label="Tiện ích bếp"
+        aria-label="Kitchen tools"
         className="grid gap-2 rounded-3xl border border-border bg-card p-2 sm:grid-cols-3"
       >
         {tabs.map((tab) => {
@@ -1032,12 +1029,11 @@ export default function WeeklySuggestions() {
           <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <span className="eyebrow">
-                <Icon name="bowl" size={15} /> Từ thứ Hai đến Chủ Nhật
+                <Icon name="bowl" size={15} /> Monday to Sunday
               </span>
-              <h2 className="section-title mt-2">Thực đơn của gia đình</h2>
+              <h2 className="section-title mt-2">Family menu</h2>
               <p className="mt-2 text-sm leading-6 text-muted">
-                Đã lên {plannedMealsCount}/{TOTAL_SLOTS} bữa. Kế hoạch tự lưu
-                trên thiết bị này theo từng tuần.
+                {plannedMealsCount}/{TOTAL_SLOTS} meals planned. The plan is saved automatically on this device, week by week.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -1047,7 +1043,7 @@ export default function WeeklySuggestions() {
                   onClick={fillEmptyMeals}
                   className="btn-secondary"
                 >
-                  Điền {emptySlots} bữa trống
+                  Fill {emptySlots} empty meals
                 </button>
               )}
               <button
@@ -1056,7 +1052,7 @@ export default function WeeklySuggestions() {
                 className="btn-secondary"
               >
                 <Icon name="refresh" size={16} />
-                <span className="ml-1">Bốc thực đơn mới</span>
+                <span className="ml-1">Shuffle new menu</span>
               </button>
               <button
                 type="button"
@@ -1064,7 +1060,7 @@ export default function WeeklySuggestions() {
                 className="btn-secondary"
               >
                 <Icon name="copy" size={16} />
-                <span className="ml-1">Sao chép thực đơn</span>
+                <span className="ml-1">Copy menu</span>
               </button>
               {plannedMealsCount > 0 && (
                 <button
@@ -1072,7 +1068,7 @@ export default function WeeklySuggestions() {
                   onClick={clearPlan}
                   className="btn-secondary"
                 >
-                  Xoá hết
+                  Clear all
                 </button>
               )}
             </div>
@@ -1086,7 +1082,7 @@ export default function WeeklySuggestions() {
               onClick={() => setPlanView("day")}
               className={`pill ${planView === "day" ? "pill-active" : ""}`}
             >
-              Từng ngày
+              Day by day
             </button>
             <button
               type="button"
@@ -1094,7 +1090,7 @@ export default function WeeklySuggestions() {
               onClick={() => setPlanView("week")}
               className={`pill ${planView === "week" ? "pill-active" : ""}`}
             >
-              Tổng quan cả tuần
+              Week overview
             </button>
           </div>
 
@@ -1104,7 +1100,7 @@ export default function WeeklySuggestions() {
               <div
                 className="flex gap-2 overflow-x-auto pb-1"
                 role="group"
-                aria-label="Chọn ngày"
+                aria-label="Choose a day"
               >
                 {plan.map((day, i) => {
                   const active = selectedDay === i;
@@ -1129,7 +1125,7 @@ export default function WeeklySuggestions() {
                       <span
                         className={`mt-1 block text-[11px] font-semibold ${active ? "text-gold-light" : done === MEALS.length ? "text-bamboo" : "text-muted"}`}
                       >
-                        {i === todayIndex ? "Hôm nay · " : ""}
+                        {i === todayIndex ? "Today · " : ""}
                         {done}/{MEALS.length}
                       </span>
                     </button>
@@ -1151,7 +1147,7 @@ export default function WeeklySuggestions() {
                       onClick={() => setSelectedDay(todayIndex)}
                       className="text-sm font-semibold text-lacquer underline underline-offset-4"
                     >
-                      Về hôm nay
+                      Back to today
                     </button>
                   )}
                 </div>
@@ -1177,7 +1173,7 @@ export default function WeeklySuggestions() {
                     disabled={selectedDay === 0}
                     onClick={() => setSelectedDay((d) => Math.max(0, d - 1))}
                   >
-                    ← Hôm trước
+                    ← Previous day
                   </button>
                   <button
                     type="button"
@@ -1187,7 +1183,7 @@ export default function WeeklySuggestions() {
                       setSelectedDay((d) => Math.min(DAYS.length - 1, d + 1))
                     }
                   >
-                    Hôm sau →
+                    Next day →
                   </button>
                 </div>
               </div>
@@ -1197,7 +1193,7 @@ export default function WeeklySuggestions() {
               <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-b border-border text-xs uppercase tracking-wider text-muted">
-                    <th className="p-3 font-bold">Ngày</th>
+                    <th className="p-3 font-bold">Day</th>
                     {MEALS.map((m) => (
                       <th key={m.key} className="p-3 font-bold">
                         {m.label}
@@ -1217,7 +1213,7 @@ export default function WeeklySuggestions() {
                         </span>
                         <span className="text-xs font-normal text-muted">
                           {weekDates[i]}
-                          {i === todayIndex ? " · Hôm nay" : ""}
+                          {i === todayIndex ? " · Today" : ""}
                         </span>
                       </th>
                       {MEALS.map(({ key, label }) => {
@@ -1230,10 +1226,10 @@ export default function WeeklySuggestions() {
                                 setSelectedDay(i);
                                 setPlanView("day");
                               }}
-                              aria-label={`${day.day}, ${label}: ${r ? r.title : "chưa chọn món"}. Bấm để chỉnh sửa.`}
+                              aria-label={`${day.day}, ${label}: ${r ? r.title : "no dish selected"}. Click to edit.`}
                               className={`w-full rounded-xl px-3 py-2 text-left transition hover:bg-cream ${r ? "font-semibold text-ink" : "text-muted"}`}
                             >
-                              {r ? r.title : "+ Chọn món"}
+                              {r ? r.title : "+ Choose a dish"}
                             </button>
                           </td>
                         );
@@ -1256,24 +1252,24 @@ export default function WeeklySuggestions() {
           className="space-y-4"
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="section-title">Đi chợ</h2>
+            <h2 className="section-title">Shopping</h2>
             <div className="flex items-center gap-2">
               <label className="sr-only" htmlFor="shopping-scope">
-                Phạm vi danh sách
+                List scope
               </label>
               <ThemedSelect
                 id="shopping-scope"
                 name="sortBy"
-                ariaLabel="Sắp xếp"
+                ariaLabel="Sort"
                 value={String(shoppingScope)}
                 onChange={(value) =>
                   setShoppingScope(value === "week" ? "week" : Number(value))
                 }
                 options={[
-                  { value: "week", label: "Cả tuần" },
+                  { value: "week", label: "Whole week" },
                   ...DAYS.map((d, i) => ({
                     value: String(i),
-                    label: i === todayIndex ? `${d} (hôm nay)` : d,
+                    label: i === todayIndex ? `${d} (today)` : d,
                   })),
                 ]}
               />
@@ -1282,12 +1278,12 @@ export default function WeeklySuggestions() {
                 onClick={copyShoppingList}
                 disabled={toBuy.length === 0}
                 className="btn-primary inline-flex items-center"
-                aria-label="Sao chép phần cần mua"
-                title="Sao chép phần cần mua"
+                aria-label="Copy items to buy"
+                title="Copy items to buy"
               >
                 <Icon name={copied ? "check" : "copy"} size={18} />
                 <span className="ml-1.5 hidden sm:inline">
-                  {copied ? "Đã chép" : "Sao chép"}
+                  {copied ? "Copied" : "Copy"}
                 </span>
               </button>
             </div>
@@ -1297,8 +1293,8 @@ export default function WeeklySuggestions() {
             <div className="notice-info flex flex-wrap items-center justify-between gap-3">
               <span>
                 {shoppingScope === "week"
-                  ? "Chưa có món nào để gom nguyên liệu."
-                  : `${shoppingScope === todayIndex ? "Hôm nay" : DAYS[shoppingScope]} chưa có món nào.`}
+                  ? "No dishes yet to gather ingredients from."
+                  : `${shoppingScope === todayIndex ? "Today" : DAYS[shoppingScope]}  has no dishes yet.`}
               </span>
               <div className="flex gap-2">
                 {shoppingScope !== "week" && (
@@ -1307,7 +1303,7 @@ export default function WeeklySuggestions() {
                     className="btn-secondary"
                     onClick={() => setShoppingScope("week")}
                   >
-                    Xem cả tuần
+                    View whole week
                   </button>
                 )}
                 <button
@@ -1319,7 +1315,7 @@ export default function WeeklySuggestions() {
                     setActiveTab("plan");
                   }}
                 >
-                  Chọn món
+                  Choose dishes
                 </button>
               </div>
             </div>
@@ -1340,13 +1336,13 @@ export default function WeeklySuggestions() {
               {shoppingItems.length > 12 && (
                 <>
                   <label className="sr-only" htmlFor="shopping-search">
-                    Tìm nguyên liệu
+                    Search ingredients
                   </label>
                   <input
                     id="shopping-search"
                     type="search"
                     className="form-input mt-3"
-                    placeholder="Tìm nguyên liệu…"
+                    placeholder="Search ingredients…"
                     value={shoppingQuery}
                     onChange={(e) => setShoppingQuery(e.target.value)}
                   />
@@ -1355,7 +1351,7 @@ export default function WeeklySuggestions() {
 
               {visibleShopping.length === 0 ? (
                 <p className="py-4 text-sm text-muted">
-                  Không có “{shoppingQuery}”.
+                  No results for “{shoppingQuery}”.
                 </p>
               ) : toBuy.length > 0 ? (
                 <ul className="mt-2 divide-y divide-border/60">
@@ -1370,14 +1366,14 @@ export default function WeeklySuggestions() {
                 </ul>
               ) : (
                 <p className="py-6 text-center text-sm font-semibold text-bamboo">
-                  Đã mua đủ 🎉
+                  Everything bought 🎉
                 </p>
               )}
 
               {bought.length > 0 && (
                 <details className="mt-2 border-t border-border pt-1">
                   <summary className="cursor-pointer py-2 text-sm font-semibold text-muted">
-                    Đã mua ({bought.length})
+                    Bought ({bought.length})
                   </summary>
                   <ul className="divide-y divide-border/60">
                     {bought.map((item) => (
@@ -1394,7 +1390,7 @@ export default function WeeklySuggestions() {
                     onClick={uncheckVisible}
                     className="mt-2 text-sm font-semibold text-lacquer underline underline-offset-4"
                   >
-                    Bỏ tích hết
+                    Uncheck all
                   </button>
                 </details>
               )}
@@ -1412,17 +1408,16 @@ export default function WeeklySuggestions() {
           className="space-y-5"
         >
           <div>
-            <span className="eyebrow">Ăn ngon, hiểu món mình ăn</span>
-            <h2 className="section-title mt-2">Dinh dưỡng theo thực đơn</h2>
+            <span className="eyebrow">Eat well, know what you eat</span>
+            <h2 className="section-title mt-2">Nutrition by menu</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-              Chọn ngày để xem dinh dưỡng từng món và tổng cả ngày, dựa trên dữ
-              liệu có trong công thức.
+              Choose a day to see nutrition for each dish and the daily total, based on the data available in the recipes.
             </p>
           </div>
           <div
             className="flex gap-2 overflow-x-auto pb-1"
             role="group"
-            aria-label="Chọn ngày"
+            aria-label="Choose a day"
           >
             {DAYS.map((day, i) => (
               <button
@@ -1433,7 +1428,7 @@ export default function WeeklySuggestions() {
                 className={`pill shrink-0 ${nutritionDay === i ? "pill-active" : ""}`}
               >
                 {day}
-                {i === todayIndex ? " · hôm nay" : ""}
+                {i === todayIndex ? " · today" : ""}
               </button>
             ))}
           </div>
@@ -1441,7 +1436,7 @@ export default function WeeklySuggestions() {
           {nutritionRecipes.length > 0 && (
             <div className="rounded-3xl border border-border bg-card p-5 shadow-sm">
               <h3 className="font-serif text-xl font-bold text-lacquer">
-                Tổng cả ngày · {DAYS[nutritionDay]}
+                Daily total · {DAYS[nutritionDay]}
               </h3>
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
                 {NUTRIENTS.map(({ key, label }) => {
@@ -1455,11 +1450,11 @@ export default function WeeklySuggestions() {
                       <p
                         className={`mt-1 break-words text-sm font-bold ${text ? "text-ink" : "font-normal text-muted"}`}
                       >
-                        {text ?? "Chưa đủ dữ liệu"}
+                        {text ?? "Not enough data"}
                       </p>
                       {text && missing > 0 && (
                         <p className="mt-1 text-[11px] text-muted">
-                          thiếu {missing} món
+                          missing for {missing} dishes
                         </p>
                       )}
                     </div>
@@ -1467,8 +1462,7 @@ export default function WeeklySuggestions() {
                 })}
               </div>
               <p className="mt-3 text-xs leading-5 text-muted">
-                Tổng chỉ cộng các món có số liệu cùng đơn vị; không tự ước tính
-                phần còn thiếu.
+                Totals only add up dishes with figures in the same unit; missing portions are not estimated.
               </p>
             </div>
           )}
@@ -1497,8 +1491,7 @@ export default function WeeklySuggestions() {
                   <NutrientGrid recipe={recipe} columns="grid-cols-2" />
                 </div>
                 <p className="mt-3 text-xs leading-5 text-muted">
-                  Giá trị theo dữ liệu công thức, chưa chắc tương ứng với khẩu
-                  phần thực tế của bạn.
+                  Values are based on recipe data and may not match your actual portion size.
                 </p>
               </article>
             ))}
@@ -1507,8 +1500,7 @@ export default function WeeklySuggestions() {
           {!nutritionRecipes.length && (
             <div className="notice-info flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <span>
-                Chưa có món cho {DAYS[nutritionDay]}. Hãy chọn món trong “Thực
-                đơn tuần” trước nhé.
+                No dishes for {DAYS[nutritionDay]}. Please choose dishes in “Weekly menu” first.
               </span>
               <button
                 type="button"
@@ -1519,7 +1511,7 @@ export default function WeeklySuggestions() {
                   setActiveTab("plan");
                 }}
               >
-                Chọn món cho ngày này
+                Choose dishes for this day
               </button>
             </div>
           )}
@@ -1527,8 +1519,7 @@ export default function WeeklySuggestions() {
       )}
 
       <p className="text-center text-xs leading-5 text-muted">
-        Thực đơn và danh sách đi chợ được lưu cục bộ theo tuần trên trình duyệt
-        hiện tại. Dữ liệu không tự đồng bộ giữa các thiết bị.
+        Menus and shopping lists are saved locally, by week, in the current browser. Data is not synced between devices.
       </p>
 
       {/* ----------------------------- Toast ---------------------------- */}
@@ -1548,12 +1539,12 @@ export default function WeeklySuggestions() {
                   setToast(null);
                 }}
               >
-                Hoàn tác
+                Undo
               </button>
             )}
             <button
               type="button"
-              aria-label="Đóng thông báo"
+              aria-label="Dismiss notification"
               className="text-ivory/70 hover:text-ivory"
               onClick={() => setToast(null)}
             >
@@ -1584,7 +1575,7 @@ function ShoppingRow({
     <li>
       <label
         className="flex cursor-pointer items-center gap-3 py-2.5"
-        title={`Dùng cho: ${recipes}`}
+        title={`Used in: ${recipes}`}
       >
         <input
           type="checkbox"

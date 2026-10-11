@@ -30,9 +30,9 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
     event.preventDefault();
     setError("");
     if (register && password !== repeatPassword)
-      return setError("Mật khẩu không khớp.");
+      return setError("Passwords do not match.");
     if (register && username.trim().length > 20)
-      return setError("Tên người dùng tối đa 20 ký tự.");
+      return setError("Username must be 20 characters or fewer.");
     setBusy(true);
     try {
       if (register) {
@@ -58,8 +58,8 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
     } catch {
       setError(
         register
-          ? "Sign up thất bại. Vui lòng kiểm tra thông tin và thử lại."
-          : "Email hoặc mật khẩu không hợp lệ.",
+          ? "Sign-up failed. Please check your information and try again."
+          : "Invalid email or password.",
       );
     } finally {
       setBusy(false);
@@ -74,7 +74,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
       await createOrUpdateUser(credential.user, { authProvider: "google.com" });
       router.push("/");
     } catch {
-      setError("Sign in với Google thất bại. Vui lòng thử lại.");
+      setError("Google sign-in failed. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -90,7 +90,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
       });
       router.push("/");
     } catch {
-      setError("Sign in với Facebook thất bại. Vui lòng thử lại.");
+      setError("Facebook sign-in failed. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -101,7 +101,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
     setBusy(true);
     try {
       const credential = await signInAnonymously(auth);
-      const guestName = `Khách ${credential.user.uid.slice(0, 5)}`;
+      const guestName = `Guest ${credential.user.uid.slice(0, 5)}`;
       await updateProfile(credential.user, { displayName: guestName });
       await createOrUpdateUser(credential.user, {
         username: guestName,
@@ -109,7 +109,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
       });
       router.push("/");
     } catch {
-      setError("Sign in ẩn danh thất bại. Vui lòng thử lại.");
+      setError("Guest sign-in failed. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -122,12 +122,12 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
           <Icon name={register ? "user-plus" : "login"} size={28} />
         </div>
         <h1 className="font-serif text-3xl font-bold text-lacquer">
-          {register ? "Tạo tài khoản" : "Chào mừng trở lại"}
+          {register ? "Create an account" : "Welcome back"}
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted">
           {register
-            ? "Sign up để chia sẻ công thức và góp chuyện quanh mâm cơm Việt."
-            : "Sign in để quản lý công thức và tham gia bình luận."}
+            ? "Sign up to share recipes and stories from the family table."
+            : "Sign in to manage your recipes and join the discussion."}
         </p>
       </div>
       {error && (
@@ -139,7 +139,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
         {register && (
           <label className="block">
             <span className="form-label">
-              <Icon name="user" size={15} /> Tên người dùng
+              <Icon name="user" size={15} /> Username
             </span>
             <input
               value={username}
@@ -147,7 +147,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
               maxLength={20}
               required
               className="form-input"
-              placeholder="Ví dụ: Bếp Nhà Na"
+              placeholder="e.g., Home Kitchen"
             />
           </label>
         )}
@@ -166,7 +166,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
         </label>
         <label className="block">
           <span className="form-label">
-            <Icon name="lock" size={15} /> Mật khẩu
+            <Icon name="lock" size={15} /> Password
           </span>
           <input
             type="password"
@@ -181,7 +181,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
         {register && (
           <label className="block">
             <span className="form-label">
-              <Icon name="lock" size={15} /> Nhập lại mật khẩu
+              <Icon name="lock" size={15} /> Confirm password
             </span>
             <input
               type="password"
@@ -205,7 +205,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
       </form>
       <div className="my-5 flex items-center gap-3 text-xs text-muted">
         <span className="h-px flex-1 bg-border" />
-        <span>hoặc</span>
+        <span>or</span>
         <span className="h-px flex-1 bg-border" />
       </div>
       <div className="space-y-3">
@@ -218,7 +218,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
           <span className="grid size-5 place-items-center rounded-full bg-white font-bold text-xs text-[#4285f4]">
             G
           </span>{" "}
-          {register ? "Sign up với Google" : "Sign in với Google"}
+          {register ? "Sign up with Google" : "Sign in with Google"}
         </button>
         <button
           type="button"
@@ -229,7 +229,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
           <span className="grid size-5 place-items-center rounded-full bg-[#1877F2] font-bold text-xs text-white">
             f
           </span>{" "}
-          {register ? "Sign up với Facebook" : "Sign in với Facebook"}
+          {register ? "Sign up with Facebook" : "Sign in with Facebook"}
         </button>
         <button
           type="button"
@@ -237,7 +237,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
           disabled={busy}
           className="btn-secondary w-full justify-center"
         >
-          <Icon name="user" size={17} /> Tiếp tục với tư cách khách
+          <Icon name="user" size={17} /> Continue as a guest
         </button>
       </div>
     </div>

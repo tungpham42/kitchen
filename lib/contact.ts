@@ -1,7 +1,7 @@
 import { SITE_NAME } from "@/lib/seo";
 
 /**
- * Contact details shown on /lien-he.
+ * Contact details shown on /contact-us.
  * Every field is optional: empty values are simply not rendered.
  * Configure via .env (see .env.example).
  */
@@ -16,7 +16,7 @@ export const CONTACT = {
   address: clean(process.env.NEXT_PUBLIC_CONTACT_ADDRESS),
   hours:
     clean(process.env.NEXT_PUBLIC_CONTACT_HOURS) ||
-    "Thứ Hai – Thứ Bảy, 08:00 – 18:00",
+    "Monday – Saturday, 08:00 – 18:00",
   facebook: clean(process.env.NEXT_PUBLIC_CONTACT_FACEBOOK),
   youtube: clean(process.env.NEXT_PUBLIC_CONTACT_YOUTUBE),
   website: "https://soft.io.vn",

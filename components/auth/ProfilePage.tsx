@@ -87,7 +87,7 @@ function ProfileInner() {
     () =>
       [...recipes].sort((a, b) => {
         if (sort === "alphabetDesc")
-          return b.title.localeCompare(a.title, "vi");
+          return b.title.localeCompare(a.title, "en");
         if (sort === "dateAsc")
           return (
             new Date(a.createdAt ?? 0).getTime() -
@@ -98,7 +98,7 @@ function ProfileInner() {
             new Date(b.createdAt ?? 0).getTime() -
             new Date(a.createdAt ?? 0).getTime()
           );
-        return a.title.localeCompare(b.title, "vi");
+        return a.title.localeCompare(b.title, "en");
       }),
     [recipes, sort],
   );
@@ -112,13 +112,13 @@ function ProfileInner() {
     setNotice("");
     const value = username.trim();
     if (!value || value.length > 20)
-      return setError("Tên người dùng phải từ 1 đến 20 ký tự.");
+      return setError("Username must be between 1 and 20 characters.");
     try {
       await updateProfile(currentUser, { displayName: value });
       await updateCommentsForUsername(currentUser.uid, value);
-      setNotice("Tên người dùng đã được cập nhật.");
+      setNotice("Username updated successfully.");
     } catch {
-      setError("Cập nhật tên người dùng thất bại.");
+      setError("Failed to update username.");
     }
   }
 
@@ -127,9 +127,9 @@ function ProfileInner() {
     setError("");
     setNotice("");
     if (newPassword !== confirmPassword)
-      return setError("Mật khẩu mới không khớp.");
+      return setError("The new passwords do not match.");
     if (!currentUser || !auth.currentUser || !currentUser.email)
-      return setError("Phiên đăng nhập đã hết hạn.");
+      return setError("Your session has expired.");
     try {
       const credential = EmailAuthProvider.credential(
         currentUser.email,
@@ -140,9 +140,9 @@ function ProfileInner() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      setNotice("Mật khẩu đã được cập nhật.");
+      setNotice("Password updated successfully.");
     } catch {
-      setError("Không thể đổi mật khẩu. Hãy kiểm tra mật khẩu hiện tại.");
+      setError("Unable to change password. Please check your current password.");
     }
   }
 
@@ -150,11 +150,11 @@ function ProfileInner() {
     <div className="space-y-8">
       <div>
         <span className="eyebrow">
-          <Icon name="user" size={15} /> Không gian của bạn
+          <Icon name="user" size={15} /> Your profile
         </span>
         <h1 className="section-title">Profile</h1>
         <p className="mt-2 text-sm text-muted">
-          Quản lý thông tin và những công thức bạn đã chia sẻ.
+          Manage your account details and the recipes you have shared.
         </p>
       </div>
       {(notice || error) && (
@@ -164,17 +164,17 @@ function ProfileInner() {
         <div className="space-y-6">
           <section className="rounded-3xl border border-border bg-card p-5 shadow-sm">
             <h2 className="subheading text-lg">
-              <Icon name="user" size={18} /> Thông tin tài khoản
+              <Icon name="user" size={18} /> Account information
             </h2>
             <div className="mt-5 rounded-2xl bg-cream/60 p-4 text-sm">
               <div className="text-muted">Email</div>
               <div className="mt-1 font-semibold text-ink">
-                {currentUser.email ?? "Tài khoản khách (ẩn danh)"}
+                {currentUser.email ?? "Guest account (anonymous)"}
               </div>
             </div>
             <form onSubmit={updateName} className="mt-4">
               <label className="block">
-                <span className="form-label">Tên người dùng</span>
+                <span className="form-label">Username</span>
                 <input
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -183,7 +183,7 @@ function ProfileInner() {
                 />
               </label>
               <button className="btn-primary mt-3">
-                <Icon name="check" size={16} /> Save tên
+                <Icon name="check" size={16} /> Save username
               </button>
             </form>
           </section>
@@ -192,13 +192,13 @@ function ProfileInner() {
           ) && (
             <section className="rounded-3xl border border-border bg-card p-5 shadow-sm">
               <h2 className="subheading text-lg">
-                <Icon name="lock" size={18} /> Đổi mật khẩu
+                <Icon name="lock" size={18} /> Change password
               </h2>
               <form onSubmit={updatePass} className="mt-5 space-y-3">
                 <input
                   className="form-input"
                   type="password"
-                  placeholder="Mật khẩu hiện tại"
+                  placeholder="Current password"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   required
@@ -206,7 +206,7 @@ function ProfileInner() {
                 <input
                   className="form-input"
                   type="password"
-                  placeholder="Mật khẩu mới"
+                  placeholder="New password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   minLength={6}
@@ -215,14 +215,14 @@ function ProfileInner() {
                 <input
                   className="form-input"
                   type="password"
-                  placeholder="Nhập lại mật khẩu mới"
+                  placeholder="Confirm new password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   minLength={6}
                   required
                 />
                 <button className="btn-secondary">
-                  <Icon name="lock" size={16} /> Cập nhật mật khẩu
+                  <Icon name="lock" size={16} /> Update password
                 </button>
               </form>
             </section>
@@ -232,24 +232,24 @@ function ProfileInner() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="subheading text-lg">
-                <Icon name="bowl" size={18} /> Recipes của tôi
+                <Icon name="bowl" size={18} /> My recipes
               </h2>
               <p className="mt-1 text-sm text-muted">
-                {recipes.length} công thức đã chia sẻ
+                {recipes.length} recipes shared
               </p>
             </div>
             <ThemedSelect
               name="sortBy"
-              ariaLabel="Sắp xếp"
+              ariaLabel="Sort by"
               value={sort}
               onChange={(value) => setProfileSortOption(value as SortOption)}
               options={[
-                { value: "alphabetAsc", label: "Tên A → Z" },
-                { value: "alphabetDesc", label: "Tên Z → A" },
-                { value: "dateDesc", label: "Mới nhất" },
-                { value: "dateAsc", label: "Cũ nhất" },
+                { value: "alphabetAsc", label: "Name: A → Z" },
+                { value: "alphabetDesc", label: "Name: Z → A" },
+                { value: "dateDesc", label: "Newest" },
+                { value: "dateAsc", label: "Oldest" },
               ]}
-              placeholder="Chọn cách sắp xếp"
+              placeholder="Choose a sort order"
             />
           </div>
           {loading ? (
@@ -262,9 +262,9 @@ function ProfileInner() {
             </div>
           ) : (
             <div className="mt-5 rounded-2xl bg-cream/60 p-5 text-center text-sm text-muted">
-              Bạn chưa chia sẻ công thức nào.{" "}
+              You have not shared any recipes yet.{" "}
               <Link href="/recipes/new" className="font-bold text-lacquer underline">
-                Thêm món đầu tiên
+                Add your first recipe
               </Link>
               .
             </div>

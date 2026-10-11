@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: `Privacy Policy ${SITE_NAME}`,
     images: [
       {
-        url: "/chinh-sach-bao-mat.jpg",
+        url: "/privacy-policy.jpg",
         width: 1200,
         height: 630,
         alt: `Privacy Policy ${SITE_NAME}`,
@@ -23,36 +23,34 @@ export default function PrivacyPolicyPage() {
         <h1 className="font-serif text-4xl font-bold text-lacquer">
           Privacy Policy
         </h1>
-        <p className="mt-2 text-sm text-muted">
-          Cập nhật: 04 tháng 10 năm 2026
-        </p>
-        <h2>Thông tin chúng tôi thu thập</h2>
+        <p className="mt-2 text-sm text-muted">Updated: October 4, 2026</p>
+        <h2>Information we collect</h2>
         <p>
-          Chúng tôi có thể lưu email, tên hiển thị và thông tin tài khoản khi
-          bạn đăng ký/đăng nhập; dữ liệu công thức bạn gửi; và các bình luận bạn
-          đăng.
+          We may store your email, display name, and account information when
+          you register or sign in; the recipe data you submit; and the comments
+          you post.
         </p>
-        <h2>Cách sử dụng thông tin</h2>
+        <h2>How we use information</h2>
         <p>
-          Dữ liệu được dùng để xác thực tài khoản, hiển thị công thức và bình
-          luận, duy trì hồ sơ người dùng và cải thiện trải nghiệm.
+          Data is used to authenticate accounts, display recipes and comments,
+          maintain user profiles, and improve the experience.
         </p>
-        <h2>Dịch vụ bên thứ ba</h2>
+        <h2>Third-party services</h2>
         <p>
-          {SITE_NAME} sử dụng Firebase cho xác thực và Firestore, Cloudinary cho
-          lưu trữ ảnh, và có thể dùng Google Analytics/Tag Manager cho thống kê
-          truy cập.
+          {SITE_NAME} uses Firebase for authentication and Firestore, Cloudinary
+          for image storage, and may use Google Analytics/Tag Manager for
+          traffic statistics.
         </p>
-        <h2>Thông tin công khai</h2>
+        <h2>Public information</h2>
         <p>
-          Recipes và bình luận được đăng trên nền tảng có thể được người dùng
-          khác xem. Không đăng thông tin nhạy cảm vào nội dung công thức hoặc
-          bình luận.
+          Recipes and comments posted on the platform may be viewed by other
+          users. Do not post sensitive information in recipe content or
+          comments.
         </p>
-        <h2>Liên hệ</h2>
+        <h2>Contact</h2>
         <p>
-          Đối với yêu cầu về dữ liệu cá nhân, hãy sử dụng kênh liên hệ được công
-          bố trên website.
+          For requests regarding personal data, please use the contact channel
+          published on the website.
         </p>
       </div>
     </article>

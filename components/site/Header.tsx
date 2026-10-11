@@ -12,13 +12,13 @@ import { SITE_NAME } from "@/lib/seo";
 
 const navItems = [
   ["/", "Home", "home"],
-  ["/meal-plans", "Gợi ý theo tuần", "calendar"],
+  ["/meal-plans", "Weekly suggestions", "calendar"],
   ["/guide", "Guide", "book"],
 ] as const;
 
 const infoItems = [
-  ["/gioi-thieu", "Giới thiệu", "bowl"],
-  ["/lien-he", "Liên hệ", "mail"],
+  ["/about-us", "About", "bowl"],
+  ["/contact-us", "Contact", "mail"],
 ] as const;
 
 export default function Header() {
@@ -63,14 +63,14 @@ export default function Header() {
                 {SITE_NAME}
               </span>
               <span className="hidden text-[11px] uppercase tracking-[0.2em] text-gold/90 sm:block">
-                Món ăn & ký ức
+                Dishes & memories
               </span>
             </span>
           </Link>
 
           <nav
             className="hidden items-center gap-1 lg:flex"
-            aria-label="Điều hướng chính"
+            aria-label="Main navigation"
           >
             {navItems.map(([href, label, icon]) => (
               <Link
@@ -122,7 +122,7 @@ export default function Header() {
                   className="inline-flex items-center gap-2 rounded-xl border border-ivory/20 bg-ivory/10 px-3 py-2 text-sm font-semibold text-ivory hover:bg-ivory/15"
                 >
                   <Icon name="user" size={16} />
-                  {currentUser.displayName || "Người dùng"}
+                  {currentUser.displayName || "User"}
                   <span className="text-gold">⌄</span>
                 </button>
                 <div
@@ -132,15 +132,15 @@ export default function Header() {
                   <Link href="/profile" {...closeAccount} className="menu-link">
                     <Icon name="user" size={16} /> Profile
                   </Link>
-                  <Link href="/recipes/new" {...closeAccount} className="menu-link">
+                  <Link
+                    href="/recipes/new"
+                    {...closeAccount}
+                    className="menu-link"
+                  >
                     <Icon name="plus" size={16} /> Add a recipe
                   </Link>
                   {isAdmin && (
-                    <Link
-                      href="/admin"
-                      {...closeAccount}
-                      className="menu-link"
-                    >
+                    <Link href="/admin" {...closeAccount} className="menu-link">
                       <Icon name="settings" size={16} /> Admin
                     </Link>
                   )}
@@ -173,7 +173,7 @@ export default function Header() {
 
           <button
             type="button"
-            aria-label="Mở menu"
+            aria-label="Open menu"
             {...({ "x-on:click": "open = !open" } as const)}
             className="inline-grid size-11 place-items-center rounded-xl border border-ivory/20 bg-ivory/10 text-ivory lg:hidden"
           >
@@ -190,7 +190,7 @@ export default function Header() {
           {...({ "x-show": "open", "x-cloak": "" } as const)}
           className="border-t border-ivory/10 py-3 lg:hidden"
         >
-          <nav className="grid gap-1" aria-label="Điều hướng di động">
+          <nav className="grid gap-1" aria-label="Mobile navigation">
             {navItems.map(([href, label, icon]) => (
               <Link
                 key={href}

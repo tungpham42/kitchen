@@ -115,13 +115,13 @@ export default function ThemedSelect({
   onChange,
   label,
   ariaLabel,
-  placeholder = "Chọn một tùy chọn",
+  placeholder = "Select an option",
   name,
   id,
   disabled = false,
   required = false,
   searchable = false,
-  emptyMessage = "Not found tùy chọn phù hợp",
+  emptyMessage = "No matching options found",
   error,
   className = "",
   hint,
@@ -461,8 +461,8 @@ export default function ThemedSelect({
                     closeMenu();
                   }
                 }}
-                placeholder="Tìm tùy chọn..."
-                aria-label="Tìm tùy chọn"
+                placeholder="Search options..."
+                aria-label="Search options"
                 aria-controls={listboxId}
                 aria-activedescendant={
                   activeOption ? `${selectId}-option-${activeIndex}` : undefined

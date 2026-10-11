@@ -52,14 +52,14 @@ export default function RecipeCard({
         </p>
         <div className="mt-auto pt-5 flex items-center justify-between gap-3">
           <Link href={`/recipes/${recipe.slug}`} className="btn-primary">
-            <Icon name="eye" size={16} /> Xem công thức
+            <Icon name="eye" size={16} /> View recipe
           </Link>
           {admin && (
             <div className="flex gap-2">
               <Link
                 href={`/recipes/${recipe.slug}/edit`}
                 className="icon-button"
-                aria-label="Chỉnh sửa"
+                aria-label="Edit"
               >
                 <Icon name="edit" />
               </Link>
