@@ -1,0 +1,509 @@
+# English migration review
+
+This is an automated starter migration, not a complete human translation.
+Review every listed line and translate any remaining Vietnamese copy, metadata, category labels, errors, and email/notification text.
+
+Potential Vietnamese lines found: **787**
+
+- `README.md:1: # Món Ăn — modern Next.js / App Router rebuild`
+- `app/layout.tsx:16: default: `${SITE_NAME} — Món ăn & ký ức`,`
+- `app/layout.tsx:19: description: `Nền tảng chia sẻ công thức và gợi ý món ăn mang hương vị truyền thống Việt Nam.`,`
+- `app/layout.tsx:25: default: `${SITE_NAME} — Món ăn & ký ức`,`
+- `app/layout.tsx:28: description: "Save giữ những món ngon và câu chuyện quanh mâm cơm Việt.",`
+- `app/layout.tsx:37: alt: `${SITE_NAME} — Món ăn & ký ức`,`
+- `app/page.tsx:47: <Icon name="bowl" size={15} /> Hương vị Việt`
+- `app/page.tsx:50: Mỗi món ăn là một câu chuyện của gia đình.`
+- `app/page.tsx:53: Khám phá công thức, tìm ý tưởng cho mâm cơm trong tuần và chia sẻ`
+- `app/page.tsx:54: những món ngon đã gắn với căn bếp của bạn.`
+- `app/page.tsx:58: <Icon name="calendar" size={17} /> Lên thực đơn tuần`
+- `app/page.tsx:61: <Icon name="plus" size={17} /> Share món nhà`
+- `app/page.tsx:71: "Bếp gia đình",`
+- `app/page.tsx:72: "Món quen mỗi ngày, nguyên liệu dễ tìm và cách làm dễ theo.",`
+- `app/page.tsx:76: "Gợi ý cả tuần",`
+- `app/page.tsx:77: "Bốc thực đơn sáng — trưa — tối — tráng miệng - món chay - món dưỡng sinh theo sở thích.",`
+- `app/page.tsx:81: "Share & lưu giữ",`
+- `app/page.tsx:82: "Đăng công thức và để lại câu chuyện phía sau món ăn.",`
+- `lib/category.ts:7: Breakfast: "Bữa sáng",`
+- `lib/category.ts:8: Lunch: "Bữa trưa",`
+- `lib/category.ts:9: Dinner: "Bữa tối",`
+- `lib/category.ts:10: Dessert: "Tráng miệng",`
+- `lib/category.ts:11: Vegan: "Món chay",`
+- `lib/category.ts:12: Wellness: "Món dưỡng sinh",`
+- `lib/category.ts:16: return category ? (labels[category] ?? category) : "Ẩm thực Việt";`
+- `lib/contact.ts:19: "Thứ Hai – Thứ Bảy, 08:00 – 18:00",`
+- `lib/slug.ts:5: .replace(/đ/g, "d")`
+- `lib/slug.ts:6: .replace(/Đ/g, "D")`
+- `lib/recipeSearch.ts:8: /** Remove Vietnamese diacritics (đ -> d) */`
+- `lib/recipeSearch.ts:10: return text.normalize("NFD").replace(COMBINING_MARKS, "").replace(/đ/g, "d");`
+- `lib/recipeSearch.ts:41: *  - If the query word has accents ("gà"), the accents must match exactly.`
+- `lib/recipeSearch.ts:42: *  - If it has none ("ga"), it matches accent-insensitively (gà, ga...).`
+- `lib/cloudinary.ts:7: throw new Error("Cloudinary chưa được cấu hình trong .env");`
+- `lib/cloudinary.ts:25: throw new Error(data.error?.message ?? "Tải ảnh lên Cloudinary thất bại.");`
+- `lib/recipeYield.ts:7: export const DEFAULT_RECIPE_YIELD = "1 khẩu phần";`
+- `lib/recipeYield.ts:23: /** Human readable yield, e.g. "4" -> "4 khẩu phần", "4 người ăn" stays as is. */`
+- `lib/recipeYield.ts:29: return /^\d+(?:[.,]\d+)?$/.test(value) ? `${value} khẩu phần` : value;`
+- `lib/contactValidation.ts:2: "Góp ý về website",`
+- `lib/contactValidation.ts:3: "Hỗ trợ tài khoản",`
+- `lib/contactValidation.ts:4: "Share / báo lỗi công thức",`
+- `lib/contactValidation.ts:5: "Hợp tác & quảng cáo",`
+- `lib/contactValidation.ts:6: "Khác",`
+- `lib/contactValidation.ts:21: if (!v) return "Bạn chưa nhập họ tên.";`
+- `lib/contactValidation.ts:22: if (v.length < 2) return `Họ tên quá ngắn (${v.length}/2 ký tự tối thiểu).`;`
+- `lib/contactValidation.ts:23: if (v.length > 80) return "Họ tên tối đa 80 ký tự.";`
+- `lib/contactValidation.ts:29: if (!v) return "Bạn chưa nhập địa chỉ email.";`
+- `lib/contactValidation.ts:30: if (/\s/.test(v)) return "Email không được chứa khoảng trắng.";`
+- `lib/contactValidation.ts:32: return "Email thiếu ký tự “@”. Ví dụ đúng: ban@example.com";`
+- `lib/contactValidation.ts:33: if (v.split("@").length > 2) return "Email chỉ được chứa một ký tự “@”.";`
+- `lib/contactValidation.ts:35: if (!local) return "Email thiếu phần tên trước “@”. Ví dụ: ban@example.com";`
+- `lib/contactValidation.ts:36: if (!domain) return "Email thiếu tên miền sau “@”. Ví dụ: ban@example.com";`
+- `lib/contactValidation.ts:38: return "Tên miền email thiếu phần đuôi, ví dụ “.com” hoặc “.vn”.";`
+- `lib/contactValidation.ts:40: return "Tên miền email không hợp lệ (dấu chấm đặt sai vị trí).";`
+- `lib/contactValidation.ts:41: if (v.length > 120) return "Email tối đa 120 ký tự.";`
+- `lib/contactValidation.ts:47: if (!len) return "Bạn chưa nhập nội dung lời nhắn.";`
+- `lib/contactValidation.ts:49: return `Nội dung còn thiếu ${MIN_MESSAGE - len} ký tự (tối thiểu ${MIN_MESSAGE} ký tự, hiện có ${len}).`;`
+- `lib/contactValidation.ts:50: if (len > MAX_MESSAGE) return `Nội dung tối đa ${MAX_MESSAGE} ký tự.`;`
+- `lib/nutrition.ts:13: label: "Năng lượng",`
+- `lib/nutrition.ts:23: { key: "proteinContent", label: "Chất đạm", unit: "g", schemaUnit: "grams" },`
+- `lib/nutrition.ts:24: { key: "fatContent", label: "Chất béo", unit: "g", schemaUnit: "grams" },`
+- `lib/nutrition.ts:26: { key: "fiberContent", label: "Chất xơ", unit: "g", schemaUnit: "grams" },`
+- `lib/nutrition.ts:47: label: "Sắt",`
+- `lib/nutrition.ts:53: label: "Kẽm",`
+- `lib/nutrition.ts:59: label: "Magiê",`
+- `lib/types.ts:43: /** Servings produced, e.g. "4" or "4 khẩu phần". Falls back to 1 serving. */`
+- `lib/seo.ts:3: export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Bếp nhà Quỳnh";`
+- `lib/seo.ts:6: export const DEFAULT_TITLE = `${SITE_NAME} — Món ăn & ký ức`;`
+- `lib/seo.ts:8: "Nền tảng chia sẻ công thức và gợi ý món ăn mang hương vị truyền thống Việt Nam.";`
+- `lib/seo.ts:10: "Save giữ những món ngon và câu chuyện quanh mâm cơm Việt.";`
+- `lib/seo.ts:15: const CATEGORY_OG_EXT = "jpg"; // đổi thành "jpg" nếu ảnh trong public/category là .jpg`
+- `lib/seo.ts:32: const description = `Khám phá các công thức ${label.toLowerCase()} mang hương vị truyền thống Việt Nam tại ${SITE_NAME}.`;`
+- `lib/youtube.ts:4: /** Lấy video ID từ các dạng link YouTube phổ biến (watch, youtu.be, embed, shorts, live). */`
+- `lib/youtube.ts:35: /** Ảnh bìa chất lượng cao nhất (có thể 404 với một số video) và ảnh dự phòng luôn tồn tại. */`
+- `lib/youtube.ts:43: /** Dùng trong form: kiểm tra trước xem video có maxres không, nếu không thì dùng hqdefault. */`
+- `lib/youtube.ts:50: // YouTube trả ảnh placeholder 120x90 khi không có maxres`
+- `lib/firebase/data.ts:121: const username = String(extra.username ?? user.displayName ?? "Người dùng");`
+- `lib/firebase/data.ts:143: userId?: string | null; // khách: undefined hoặc null đều được`
+- `lib/firebase/data.ts:149: username: comment.username ?? "Khách",`
+- `lib/firebase/data.ts:150: userId: comment.userId ?? null, // không bao giờ để undefined`
+- `lib/firebase/data.ts:188: if (!userId) return "Tác giả ẩn danh";`
+- `lib/firebase/data.ts:190: return String(profile?.username ?? profile?.displayName ?? "Tác giả ẩn danh");`
+- `lib/firebase/server.ts:89: const ANONYMOUS_AUTHOR = "Tác giả ẩn danh";`
+- `components/ui/Pagination.tsx:27: aria-label="Phân trang"`
+- `components/ui/Pagination.tsx:34: aria-label="Trang trước"`
+- `components/ui/ThemedSelect.tsx:107: * native option popup so the menu can follow Món Ăn's warm recipe-notebook theme.`
+- `components/ui/ThemedSelect.tsx:118: placeholder = "Chọn một tùy chọn",`
+- `components/ui/ThemedSelect.tsx:124: emptyMessage = "Not found tùy chọn phù hợp",`
+- `components/ui/ThemedSelect.tsx:464: placeholder="Tìm tùy chọn..."`
+- `components/ui/ThemedSelect.tsx:465: aria-label="Tìm tùy chọn"`
+- `components/home/HeroShare.tsx:62: label: "Rủ hội bạn",`
+- `components/home/HeroShare.tsx:67: label: "Kể chuyện món này",`
+- `components/home/HeroShare.tsx:72: label: "Lan tỏa cảm hứng",`
+- `components/home/HeroShare.tsx:78: "🔥 TÌNH CỜ LƯỚT THẤY MÀ THẤY ĐÓI NGANG 😋\n\nCó những món ăn không chỉ ngon — mà còn kéo cả ký ức gia đình quay về. ❤️\n\nMình vừa tìm thấy một món rất đáng để lưu lại cho mâm cơm tuần này. Ai mê món Việt, tag người hay rủ bạn vào bếp cùng! `
+- `components/home/HeroShare.tsx:80: x: "🔥 Không biết tối nay ăn gì? Đây là tín hiệu bạn đang tìm một món Việt thật cuốn 😋\n\nNgon, dễ làm, đậm vị nhà — kiểu món nhìn một lần là muốn vào bếp ngay. 👇",`
+- `components/home/HeroShare.tsx:83: "🍲 Có những món ăn không chỉ tạo nên một bữa cơm, mà còn tạo nên những câu chuyện để nhớ.\n\nMình vừa khám phá một công thức mang đúng tinh thần đó: gần gũi, dễ áp dụng và đậm chất Việt. Một chút cảm hứng cho căn bếp và cho những bữa cơm có`
+- `components/home/HeroShare.tsx:178: Thấy ngon? Đừng giữ một mình!`
+- `components/home/HeroShare.tsx:182: Một cú chạm để món nhà lên sóng — rủ bạn bè vào bếp và lan tỏa cảm hứng.`
+- `components/home/HeroShare.tsx:185: <div className="mt-3 flex flex-wrap gap-2" aria-label="Share trang này">`
+- `components/home/HeroShare.tsx:195: aria-label={`${label} trên ${displayName}`}`
+- `components/home/HeroShare.tsx:213: aria-label={`${label} trên ${displayName}`}`
+- `components/auth/ProfilePage.tsx:115: return setError("Tên người dùng phải từ 1 đến 20 ký tự.");`
+- `components/auth/ProfilePage.tsx:119: setNotice("Tên người dùng đã được cập nhật.");`
+- `components/auth/ProfilePage.tsx:121: setError("Cập nhật tên người dùng thất bại.");`
+- `components/auth/ProfilePage.tsx:130: return setError("Mật khẩu mới không khớp.");`
+- `components/auth/ProfilePage.tsx:132: return setError("Phiên đăng nhập đã hết hạn.");`
+- `components/auth/ProfilePage.tsx:143: setNotice("Mật khẩu đã được cập nhật.");`
+- `components/auth/ProfilePage.tsx:145: setError("Không thể đổi mật khẩu. Hãy kiểm tra mật khẩu hiện tại.");`
+- `components/auth/ProfilePage.tsx:153: <Icon name="user" size={15} /> Không gian của bạn`
+- `components/auth/ProfilePage.tsx:157: Quản lý thông tin và những công thức bạn đã chia sẻ.`
+- `components/auth/ProfilePage.tsx:167: <Icon name="user" size={18} /> Thông tin tài khoản`
+- `components/auth/ProfilePage.tsx:172: {currentUser.email ?? "Tài khoản khách (ẩn danh)"}`
+- `components/auth/ProfilePage.tsx:177: <span className="form-label">Tên người dùng</span>`
+- `components/auth/ProfilePage.tsx:186: <Icon name="check" size={16} /> Save tên`
+- `components/auth/ProfilePage.tsx:195: <Icon name="lock" size={18} /> Đổi mật khẩu`
+- `components/auth/ProfilePage.tsx:201: placeholder="Mật khẩu hiện tại"`
+- `components/auth/ProfilePage.tsx:209: placeholder="Mật khẩu mới"`
+- `components/auth/ProfilePage.tsx:218: placeholder="Nhập lại mật khẩu mới"`
+- `components/auth/ProfilePage.tsx:225: <Icon name="lock" size={16} /> Cập nhật mật khẩu`
+- `components/auth/ProfilePage.tsx:235: <Icon name="bowl" size={18} /> Recipes của tôi`
+- `components/auth/ProfilePage.tsx:238: {recipes.length} công thức đã chia sẻ`
+- `components/auth/ProfilePage.tsx:243: ariaLabel="Sắp xếp"`
+- `components/auth/ProfilePage.tsx:247: { value: "alphabetAsc", label: "Tên A → Z" },`
+- `components/auth/ProfilePage.tsx:248: { value: "alphabetDesc", label: "Tên Z → A" },`
+- `components/auth/ProfilePage.tsx:249: { value: "dateDesc", label: "Mới nhất" },`
+- `components/auth/ProfilePage.tsx:250: { value: "dateAsc", label: "Cũ nhất" },`
+- `components/auth/ProfilePage.tsx:252: placeholder="Chọn cách sắp xếp"`
+- `components/auth/ProfilePage.tsx:265: Bạn chưa chia sẻ công thức nào.{" "}`
+- `components/auth/ProfilePage.tsx:267: Thêm món đầu tiên`
+- `components/auth/AuthForms.tsx:33: return setError("Mật khẩu không khớp.");`
+- `components/auth/AuthForms.tsx:35: return setError("Tên người dùng tối đa 20 ký tự.");`
+- `components/auth/AuthForms.tsx:61: ? "Sign up thất bại. Vui lòng kiểm tra thông tin và thử lại."`
+- `components/auth/AuthForms.tsx:62: : "Email hoặc mật khẩu không hợp lệ.",`
+- `components/auth/AuthForms.tsx:77: setError("Sign in với Google thất bại. Vui lòng thử lại.");`
+- `components/auth/AuthForms.tsx:93: setError("Sign in với Facebook thất bại. Vui lòng thử lại.");`
+- `components/auth/AuthForms.tsx:104: const guestName = `Khách ${credential.user.uid.slice(0, 5)}`;`
+- `components/auth/AuthForms.tsx:112: setError("Sign in ẩn danh thất bại. Vui lòng thử lại.");`
+- `components/auth/AuthForms.tsx:125: {register ? "Tạo tài khoản" : "Chào mừng trở lại"}`
+- `components/auth/AuthForms.tsx:129: ? "Sign up để chia sẻ công thức và góp chuyện quanh mâm cơm Việt."`
+- `components/auth/AuthForms.tsx:130: : "Sign in để quản lý công thức và tham gia bình luận."}`
+- `components/auth/AuthForms.tsx:142: <Icon name="user" size={15} /> Tên người dùng`
+- `components/auth/AuthForms.tsx:150: placeholder="Ví dụ: Bếp Nhà Na"`
+- `components/auth/AuthForms.tsx:169: <Icon name="lock" size={15} /> Mật khẩu`
+- `components/auth/AuthForms.tsx:184: <Icon name="lock" size={15} /> Nhập lại mật khẩu`
+- `components/auth/AuthForms.tsx:208: <span>hoặc</span>`
+- `components/auth/AuthForms.tsx:221: {register ? "Sign up với Google" : "Sign in với Google"}`
+- `components/auth/AuthForms.tsx:232: {register ? "Sign up với Facebook" : "Sign in với Facebook"}`
+- `components/auth/AuthForms.tsx:240: <Icon name="user" size={17} /> Tiếp tục với tư cách khách`
+- `components/auth/RequireAuth.tsx:25: return <LoadingBlock label="Đang kiểm tra quyền truy cập..." />;`
+- `components/recipe/RecipeImage.tsx:15: /** Hiển thị khi không có ảnh và cũng không có video YouTube hợp lệ. */`
+- `components/recipe/RecipeImage.tsx:38: // Ảnh YouTube đã được tối ưu sẵn, không cần cấu hình remotePatterns`
+- `components/recipe/RecipeImage.tsx:46: * Ảnh món ăn: ưu tiên imageUrl; nếu trống hoặc lỗi thì dùng ảnh bìa video YouTube`
+- `components/recipe/RecipeImage.tsx:47: * (maxres → hqdefault); cuối cùng mới hiện `fallback`.`
+- `components/recipes/RecipeEditor.tsx:72: setError("Not found công thức để chỉnh sửa.");`
+- `components/recipes/RecipeEditor.tsx:85: .catch(() => setError("Không thể tải công thức."))`
+- `components/recipes/RecipeEditor.tsx:89: // Tự lấy ảnh bìa từ video YouTube khi chưa có ảnh do người dùng chọn/dán.`
+- `components/recipes/RecipeEditor.tsx:111: setError("Vui lòng đăng nhập trước khi tạo công thức bằng AI.");`
+- `components/recipes/RecipeEditor.tsx:116: "Hãy nhập đường dẫn video YouTube hợp lệ trước khi tạo nội dung.",`
+- `components/recipes/RecipeEditor.tsx:127: "AI sẽ thay thế tiêu đề, mô tả, nguyên liệu, cách làm, danh mục và dinh dưỡng hiện tại. Bạn muốn tiếp tục?",`
+- `components/recipes/RecipeEditor.tsx:160: throw new Error(result.error || "Không thể tạo nội dung từ video này.");`
+- `components/recipes/RecipeEditor.tsx:170: throw new Error("AI trả về bản nháp chưa đầy đủ. Vui lòng thử lại.");`
+- `components/recipes/RecipeEditor.tsx:180: `Đã tạo bản nháp${result.source?.videoTitle ? ` từ video “${result.source.videoTitle}”` : " từ video YouTube"}. Hãy kiểm tra định lượng, cách làm và các ước tính dinh dưỡng trước khi lưu.`,`
+- `components/recipes/RecipeEditor.tsx:184: err instanceof Error ? err.message : "Không thể tạo công thức bằng AI.",`
+- `components/recipes/RecipeEditor.tsx:236: mode === "edit" ? "Đã cập nhật công thức." : "Đã thêm công thức mới.",`
+- `components/recipes/RecipeEditor.tsx:240: setError(err instanceof Error ? err.message : "Không thể lưu công thức.");`
+- `components/recipes/RecipeEditor.tsx:246: if (initialLoading) return <LoadingBlock label="Đang mở công thức..." />;`
+- `components/recipes/RecipeEditor.tsx:252: <Icon name={mode === "edit" ? "edit" : "plus"} size={15} /> Sổ tay bếp`
+- `components/recipes/RecipeEditor.tsx:255: {mode === "edit" ? "Chỉnh sửa công thức" : "Add a recipe"}`
+- `components/recipes/RecipeEditor.tsx:258: Ghi lại món ngon theo cách dễ đọc, dễ nấu và dễ truyền lại cho người`
+- `components/recipes/RecipeEditor.tsx:259: thân. Bạn cũng có thể tạo bản nháp từ video YouTube bằng AI.`
+- `components/recipes/RecipeEditor.tsx:277: <Icon name="bowl" size={15} /> Tên món / tiêu đề`
+- `components/recipes/RecipeEditor.tsx:284: placeholder="Ví dụ: Phở bò gia truyền"`
+- `components/recipes/RecipeEditor.tsx:289: <Icon name="book" size={15} /> Mô tả`
+- `components/recipes/RecipeEditor.tsx:296: placeholder="Một vài câu giới thiệu về món ăn, dịp thường nấu hoặc hương vị đặc trưng..."`
+- `components/recipes/RecipeEditor.tsx:301: <Icon name="tag" size={15} /> Danh mục`
+- `components/recipes/RecipeEditor.tsx:305: ariaLabel="Danh mục"`
+- `components/recipes/RecipeEditor.tsx:314: placeholder="Chọn danh mục"`
+- `components/recipes/RecipeEditor.tsx:336: AI đọc phụ đề video để soạn tiêu đề, mô tả, nguyên liệu, cách`
+- `components/recipes/RecipeEditor.tsx:337: làm và dinh dưỡng.`
+- `components/recipes/RecipeEditor.tsx:344: Tạo nội dung bằng AI`
+- `components/recipes/RecipeEditor.tsx:347: Dùng AI tạo bản nháp để bạn xem lại; công thức chưa được lưu`
+- `components/recipes/RecipeEditor.tsx:348: cho đến khi bấm nút đăng.`
+- `components/recipes/RecipeEditor.tsx:362: {aiBusy ? "Đang tạo bản nháp..." : "Tạo công thức bằng AI"}`
+- `components/recipes/RecipeEditor.tsx:367: Lời thoại / phụ đề video (không bắt buộc)`
+- `components/recipes/RecipeEditor.tsx:374: placeholder="Để trống để AI tự lấy phụ đề YouTube. Nếu video không có phụ đề hoặc máy chủ không đọc được, hãy dán lời thoại/mô tả vào đây."`
+- `components/recipes/RecipeEditor.tsx:378: tự`
+- `components/recipes/RecipeEditor.tsx:394: (mỗi dòng một nguyên liệu)`
+- `components/recipes/RecipeEditor.tsx:402: placeholder={"500g thịt bò\n1kg xương ống\n..."}`
+- `components/recipes/RecipeEditor.tsx:409: (mỗi dòng một bước)`
+- `components/recipes/RecipeEditor.tsx:418: "Sơ chế nguyên liệu...\nNinh nước dùng...\nTrình bày và thưởng thức..."`
+- `components/recipes/RecipeEditor.tsx:424: <Icon name="list" size={15} /> Giá trị dinh dưỡng{" "}`
+- `components/recipes/RecipeEditor.tsx:426: (tuỳ chọn, tính cho mỗi khẩu phần)`
+- `components/recipes/RecipeEditor.tsx:456: <Icon name="image" size={15} /> Ảnh món ăn`
+- `components/recipes/RecipeEditor.tsx:475: placeholder="Hoặc dán URL ảnh (https://...)"`
+- `components/recipes/RecipeEditor.tsx:483: alt="Xem trước ảnh món ăn"`
+- `components/recipes/RecipeEditor.tsx:490: ? "Đang dùng ảnh bìa của video YouTube. Chọn ảnh khác hoặc dán URL để thay thế."`
+- `components/recipes/RecipeEditor.tsx:491: : "Ảnh mới sẽ được tải lên Cloudinary bằng unsigned upload preset; URL sẽ được giữ nguyên khi bạn dán ảnh có sẵn. Nếu để trống và có link YouTube, ảnh bìa video sẽ được dùng tự động."}`
+- `components/recipes/RecipeEditor.tsx:496: <strong className="text-ink">Đường dẫn dự kiến:</strong> /recipes/`
+- `components/recipes/RecipeEditor.tsx:501: Huỷ`
+- `components/recipes/RecipeEditor.tsx:512: {mode === "edit" ? "Save thay đổi" : "Đăng công thức"}`
+- `components/recipes/WeeklySuggestions.tsx:36: "Thứ Hai",`
+- `components/recipes/WeeklySuggestions.tsx:37: "Thứ Ba",`
+- `components/recipes/WeeklySuggestions.tsx:38: "Thứ Tư",`
+- `components/recipes/WeeklySuggestions.tsx:39: "Thứ Năm",`
+- `components/recipes/WeeklySuggestions.tsx:40: "Thứ Sáu",`
+- `components/recipes/WeeklySuggestions.tsx:41: "Thứ Bảy",`
+- `components/recipes/WeeklySuggestions.tsx:42: "Chủ Nhật",`
+- `components/recipes/WeeklySuggestions.tsx:47: { key: "Breakfast", label: "Bữa sáng", hint: "Gọn nhẹ, đủ năng lượng" },`
+- `components/recipes/WeeklySuggestions.tsx:48: { key: "Lunch", label: "Bữa trưa", hint: "Bữa chính trong ngày" },`
+- `components/recipes/WeeklySuggestions.tsx:49: { key: "Dinner", label: "Bữa tối", hint: "Ngon miệng, vừa bụng" },`
+- `components/recipes/WeeklySuggestions.tsx:57: { key: "calories", label: "Năng lượng" },`
+- `components/recipes/WeeklySuggestions.tsx:58: { key: "proteinContent", label: "Chất đạm" },`
+- `components/recipes/WeeklySuggestions.tsx:59: { key: "carbohydrateContent", label: "Tinh bột" },`
+- `components/recipes/WeeklySuggestions.tsx:60: { key: "fatContent", label: "Chất béo" },`
+- `components/recipes/WeeklySuggestions.tsx:61: { key: "fiberContent", label: "Chất xơ" },`
+- `components/recipes/WeeklySuggestions.tsx:206: "muỗng\\s+cà\\s+phê|muỗng\\s+canh|thìa\\s+cà\\s+phê|thìa\\s+canh|kg|grams|gram|gr|g|ml|lít|lit|l|quả|trái|củ|nhánh|bó|gói|miếng|con|chén|bát|lon|lá|nắm|muỗng|thìa|viên|tép|ít";`
+- `components/recipes/WeeklySuggestions.tsx:209: // word ("2 lá chanh" must not become unit "l" + name "á chanh").`
+- `components/recipes/WeeklySuggestions.tsx:255: } else if (unit === "l" || unit === "lit" || unit === "lít") {`
+- `components/recipes/WeeklySuggestions.tsx:383: {value ?? "Chưa có dữ liệu"}`
+- `components/recipes/WeeklySuggestions.tsx:450: Chọn món cho {slot.label.toLowerCase()}`
+- `components/recipes/WeeklySuggestions.tsx:456: placeholder="Chưa chọn món"`
+- `components/recipes/WeeklySuggestions.tsx:459: ? [{ value: "", label: "Chưa chọn món" }]`
+- `components/recipes/WeeklySuggestions.tsx:461: { value: "", label: "Chưa chọn món" },`
+- `components/recipes/WeeklySuggestions.tsx:472: label: `Gợi ý cho ${slot.label.toLowerCase()}`,`
+- `components/recipes/WeeklySuggestions.tsx:479: label: "Các món khác",`
+- `components/recipes/WeeklySuggestions.tsx:494: title="Đổi sang một món ngẫu nhiên khác"`
+- `components/recipes/WeeklySuggestions.tsx:497: <span className="ml-1">Đổi món</span>`
+- `components/recipes/WeeklySuggestions.tsx:504: aria-label={`Bỏ món ${slot.label.toLowerCase()}`}`
+- `components/recipes/WeeklySuggestions.tsx:505: title="Bỏ món này"`
+- `components/recipes/WeeklySuggestions.tsx:507: Bỏ`
+- `components/recipes/WeeklySuggestions.tsx:530: {recipe.ingredients.length} nguyên liệu · {recipe.steps.length}{" "}`
+- `components/recipes/WeeklySuggestions.tsx:531: bước nấu`
+- `components/recipes/WeeklySuggestions.tsx:540: {open ? "Thu gọn" : "Xem cách nấu"}`
+- `components/recipes/WeeklySuggestions.tsx:563: Chưa có danh sách nguyên liệu.`
+- `components/recipes/WeeklySuggestions.tsx:569: Các bước chế biến`
+- `components/recipes/WeeklySuggestions.tsx:584: Chưa có hướng dẫn chế biến.`
+- `components/recipes/WeeklySuggestions.tsx:591: Dinh dưỡng được cung cấp`
+- `components/recipes/WeeklySuggestions.tsx:597: Mở trang công thức đầy đủ`
+- `components/recipes/WeeklySuggestions.tsx:604: Dữ liệu dinh dưỡng phụ thuộc thông tin công thức do tác giả`
+- `components/recipes/WeeklySuggestions.tsx:605: cung cấp; không tự ước tính khi thiếu dữ liệu.`
+- `components/recipes/WeeklySuggestions.tsx:613: Chọn một món ở danh sách, hoặc bấm “Đổi món” để nhận gợi ý ngẫu nhiên.`
+- `components/recipes/WeeklySuggestions.tsx:676: if (alive) setError("Không thể tải công thức. Vui lòng thử lại.");`
+- `components/recipes/WeeklySuggestions.tsx:771: window.prompt("Sao chép nội dung:", text);`
+- `components/recipes/WeeklySuggestions.tsx:781: notify("Đã bốc thực đơn mới cho cả tuần.", () => {`
+- `components/recipes/WeeklySuggestions.tsx:790: notify("Đã xoá toàn bộ thực đơn tuần.", () => setPlan(previous));`
+- `components/recipes/WeeklySuggestions.tsx:828: notify("Đã điền các bữa còn trống.", () => setPlan(previous));`
+- `components/recipes/WeeklySuggestions.tsx:846: notify("Đã bỏ đánh dấu.", () => setCheckedItems(previous));`
+- `components/recipes/WeeklySuggestions.tsx:853: ? "Danh sách đi chợ cả tuần"`
+- `components/recipes/WeeklySuggestions.tsx:854: : `Danh sách đi chợ ${DAYS[shoppingScope]}`;`
+- `components/recipes/WeeklySuggestions.tsx:858: : "Danh sách đi chợ đang trống.",`
+- `components/recipes/WeeklySuggestions.tsx:859: "Đã sao chép phần còn cần mua.",`
+- `components/recipes/WeeklySuggestions.tsx:874: copyText(`Thực đơn tuần\n\n${text}`, "Đã sao chép thực đơn tuần.");`
+- `components/recipes/WeeklySuggestions.tsx:880: <LoadingBlock label="Đang chuẩn bị thực đơn và danh sách đi chợ..." />`
+- `components/recipes/WeeklySuggestions.tsx:892: Thử lại`
+- `components/recipes/WeeklySuggestions.tsx:900: <h1 className="section-title">Cùng lên thực đơn đầu tiên</h1>`
+- `components/recipes/WeeklySuggestions.tsx:902: Chưa có công thức để xếp món. Hãy thêm vài món vào sổ tay, rồi quay`
+- `components/recipes/WeeklySuggestions.tsx:903: lại để tự động lên thực đơn, gom nguyên liệu và xem dinh dưỡng.`
+- `components/recipes/WeeklySuggestions.tsx:920: label: "Thực đơn tuần",`
+- `components/recipes/WeeklySuggestions.tsx:921: description: "Chọn món cho từng bữa",`
+- `components/recipes/WeeklySuggestions.tsx:926: label: "Đi chợ",`
+- `components/recipes/WeeklySuggestions.tsx:927: description: "Ingredients cần mua",`
+- `components/recipes/WeeklySuggestions.tsx:934: label: "Dinh dưỡng",`
+- `components/recipes/WeeklySuggestions.tsx:935: description: "Xem thông tin theo từng ngày",`
+- `components/recipes/WeeklySuggestions.tsx:949: <Icon name="calendar" size={15} /> Kế hoạch bếp nhà ·{" "}`
+- `components/recipes/WeeklySuggestions.tsx:953: Hôm nay ăn gì? Cả tuần đã có kế hoạch.`
+- `components/recipes/WeeklySuggestions.tsx:956: Chọn món, gom nguyên liệu đi chợ, mở cách nấu và xem dinh dưỡng —`
+- `components/recipes/WeeklySuggestions.tsx:957: tất cả trong một nơi.`
+- `components/recipes/WeeklySuggestions.tsx:969: Xem bữa hôm nay`
+- `components/recipes/WeeklySuggestions.tsx:979: Đi chợ cần mua gì?`
+- `components/recipes/WeeklySuggestions.tsx:988: aria-label="Tiện ích bếp"`
+- `components/recipes/WeeklySuggestions.tsx:1035: <Icon name="bowl" size={15} /> Từ thứ Hai đến Chủ Nhật`
+- `components/recipes/WeeklySuggestions.tsx:1037: <h2 className="section-title mt-2">Thực đơn của gia đình</h2>`
+- `components/recipes/WeeklySuggestions.tsx:1039: Đã lên {plannedMealsCount}/{TOTAL_SLOTS} bữa. Kế hoạch tự lưu`
+- `components/recipes/WeeklySuggestions.tsx:1040: trên thiết bị này theo từng tuần.`
+- `components/recipes/WeeklySuggestions.tsx:1050: Điền {emptySlots} bữa trống`
+- `components/recipes/WeeklySuggestions.tsx:1059: <span className="ml-1">Bốc thực đơn mới</span>`
+- `components/recipes/WeeklySuggestions.tsx:1067: <span className="ml-1">Sao chép thực đơn</span>`
+- `components/recipes/WeeklySuggestions.tsx:1075: Xoá hết`
+- `components/recipes/WeeklySuggestions.tsx:1089: Từng ngày`
+- `components/recipes/WeeklySuggestions.tsx:1097: Tổng quan cả tuần`
+- `components/recipes/WeeklySuggestions.tsx:1107: aria-label="Chọn ngày"`
+- `components/recipes/WeeklySuggestions.tsx:1132: {i === todayIndex ? "Hôm nay · " : ""}`
+- `components/recipes/WeeklySuggestions.tsx:1154: Về hôm nay`
+- `components/recipes/WeeklySuggestions.tsx:1180: ← Hôm trước`
+- `components/recipes/WeeklySuggestions.tsx:1190: Hôm sau →`
+- `components/recipes/WeeklySuggestions.tsx:1200: <th className="p-3 font-bold">Ngày</th>`
+- `components/recipes/WeeklySuggestions.tsx:1220: {i === todayIndex ? " · Hôm nay" : ""}`
+- `components/recipes/WeeklySuggestions.tsx:1233: aria-label={`${day.day}, ${label}: ${r ? r.title : "chưa chọn món"}. Bấm để chỉnh sửa.`}`
+- `components/recipes/WeeklySuggestions.tsx:1236: {r ? r.title : "+ Chọn món"}`
+- `components/recipes/WeeklySuggestions.tsx:1259: <h2 className="section-title">Đi chợ</h2>`
+- `components/recipes/WeeklySuggestions.tsx:1262: Phạm vi danh sách`
+- `components/recipes/WeeklySuggestions.tsx:1267: ariaLabel="Sắp xếp"`
+- `components/recipes/WeeklySuggestions.tsx:1273: { value: "week", label: "Cả tuần" },`
+- `components/recipes/WeeklySuggestions.tsx:1276: label: i === todayIndex ? `${d} (hôm nay)` : d,`
+- `components/recipes/WeeklySuggestions.tsx:1285: aria-label="Sao chép phần cần mua"`
+- `components/recipes/WeeklySuggestions.tsx:1286: title="Sao chép phần cần mua"`
+- `components/recipes/WeeklySuggestions.tsx:1290: {copied ? "Đã chép" : "Sao chép"}`
+- `components/recipes/WeeklySuggestions.tsx:1300: ? "Chưa có món nào để gom nguyên liệu."`
+- `components/recipes/WeeklySuggestions.tsx:1301: : `${shoppingScope === todayIndex ? "Hôm nay" : DAYS[shoppingScope]} chưa có món nào.`}`
+- `components/recipes/WeeklySuggestions.tsx:1310: Xem cả tuần`
+- `components/recipes/WeeklySuggestions.tsx:1322: Chọn món`
+- `components/recipes/WeeklySuggestions.tsx:1343: Tìm nguyên liệu`
+- `components/recipes/WeeklySuggestions.tsx:1349: placeholder="Tìm nguyên liệu…"`
+- `components/recipes/WeeklySuggestions.tsx:1358: Không có “{shoppingQuery}”.`
+- `components/recipes/WeeklySuggestions.tsx:1373: Đã mua đủ 🎉`
+- `components/recipes/WeeklySuggestions.tsx:1380: Đã mua ({bought.length})`
+- `components/recipes/WeeklySuggestions.tsx:1397: Bỏ tích hết`
+- `components/recipes/WeeklySuggestions.tsx:1415: <span className="eyebrow">Ăn ngon, hiểu món mình ăn</span>`
+- `components/recipes/WeeklySuggestions.tsx:1416: <h2 className="section-title mt-2">Dinh dưỡng theo thực đơn</h2>`
+- `components/recipes/WeeklySuggestions.tsx:1418: Chọn ngày để xem dinh dưỡng từng món và tổng cả ngày, dựa trên dữ`
+- `components/recipes/WeeklySuggestions.tsx:1419: liệu có trong công thức.`
+- `components/recipes/WeeklySuggestions.tsx:1425: aria-label="Chọn ngày"`
+- `components/recipes/WeeklySuggestions.tsx:1436: {i === todayIndex ? " · hôm nay" : ""}`
+- `components/recipes/WeeklySuggestions.tsx:1444: Tổng cả ngày · {DAYS[nutritionDay]}`
+- `components/recipes/WeeklySuggestions.tsx:1458: {text ?? "Chưa đủ dữ liệu"}`
+- `components/recipes/WeeklySuggestions.tsx:1462: thiếu {missing} món`
+- `components/recipes/WeeklySuggestions.tsx:1470: Tổng chỉ cộng các món có số liệu cùng đơn vị; không tự ước tính`
+- `components/recipes/WeeklySuggestions.tsx:1471: phần còn thiếu.`
+- `components/recipes/WeeklySuggestions.tsx:1500: Giá trị theo dữ liệu công thức, chưa chắc tương ứng với khẩu`
+- `components/recipes/WeeklySuggestions.tsx:1501: phần thực tế của bạn.`
+- `components/recipes/WeeklySuggestions.tsx:1510: Chưa có món cho {DAYS[nutritionDay]}. Hãy chọn món trong “Thực`
+- `components/recipes/WeeklySuggestions.tsx:1511: đơn tuần” trước nhé.`
+- `components/recipes/WeeklySuggestions.tsx:1522: Chọn món cho ngày này`
+- `components/recipes/WeeklySuggestions.tsx:1530: Thực đơn và danh sách đi chợ được lưu cục bộ theo tuần trên trình duyệt`
+- `components/recipes/WeeklySuggestions.tsx:1531: hiện tại. Dữ liệu không tự đồng bộ giữa các thiết bị.`
+- `components/recipes/WeeklySuggestions.tsx:1551: Hoàn tác`
+- `components/recipes/WeeklySuggestions.tsx:1556: aria-label="Đóng thông báo"`
+- `components/recipes/WeeklySuggestions.tsx:1587: title={`Dùng cho: ${recipes}`}`
+- `components/recipes/RecipeCard.tsx:55: <Icon name="eye" size={16} /> Xem công thức`
+- `components/recipes/RecipeCard.tsx:62: aria-label="Chỉnh sửa"`
+- `components/recipes/AdminPanel.tsx:132: `Không thể tải bình luận của ${failedCommentLoads} công thức. Bạn có thể tải lại để thử lại.`,`
+- `components/recipes/AdminPanel.tsx:136: setError("Không thể tải dữ liệu quản trị. Vui lòng thử lại.");`
+- `components/recipes/AdminPanel.tsx:318: const title = recipe?.title ?? "công thức này";`
+- `components/recipes/AdminPanel.tsx:320: if (!window.confirm(`Delete ${title}? Hành động không thể hoàn tác.`)) return;`
+- `components/recipes/AdminPanel.tsx:333: setError("Không thể xóa công thức.");`
+- `components/recipes/AdminPanel.tsx:344: const author = comment?.username || "người dùng";`
+- `components/recipes/AdminPanel.tsx:347: `Delete bình luận của ${author}? Hành động không thể hoàn tác.`,`
+- `components/recipes/AdminPanel.tsx:372: setError("Không thể xóa bình luận.");`
+- `components/recipes/AdminPanel.tsx:383: <Icon name="settings" size={15} /> Phòng bếp quản trị`
+- `components/recipes/AdminPanel.tsx:385: <h1 className="section-title">Admin nội dung</h1>`
+- `components/recipes/AdminPanel.tsx:387: Quản lý công thức, theo dõi hoạt động bình luận và dọn dẹp nội dung`
+- `components/recipes/AdminPanel.tsx:388: không phù hợp trong cộng đồng.`
+- `components/recipes/AdminPanel.tsx:403: {refreshing ? "Đang tải lại..." : "Tải lại dữ liệu"}`
+- `components/recipes/AdminPanel.tsx:414: <LoadingBlock label="Đang tải dữ liệu quản trị..." />`
+- `components/recipes/AdminPanel.tsx:418: aria-label="Tổng quan"`
+- `components/recipes/AdminPanel.tsx:425: detail="Tổng số công thức"`
+- `components/recipes/AdminPanel.tsx:429: label="Bình luận"`
+- `components/recipes/AdminPanel.tsx:431: detail="Tổng số bình luận"`
+- `components/recipes/AdminPanel.tsx:435: label="7 ngày qua"`
+- `components/recipes/AdminPanel.tsx:437: detail="Bình luận mới"`
+- `components/recipes/AdminPanel.tsx:441: label="Có tương tác"`
+- `components/recipes/AdminPanel.tsx:443: detail="Recipes có bình luận"`
+- `components/recipes/AdminPanel.tsx:447: label="Chưa có bình luận"`
+- `components/recipes/AdminPanel.tsx:449: detail="Cần thêm tương tác"`
+- `components/recipes/AdminPanel.tsx:466: label="Bình luận"`
+- `components/recipes/AdminPanel.tsx:622: <Icon name="search" size={15} /> Tìm công thức`
+- `components/recipes/AdminPanel.tsx:628: placeholder="Tên, mô tả hoặc slug..."`
+- `components/recipes/AdminPanel.tsx:633: <span className="form-label">Danh mục</span>`
+- `components/recipes/AdminPanel.tsx:636: ariaLabel="Danh mục"`
+- `components/recipes/AdminPanel.tsx:640: { value: "all", label: "Tất cả danh mục" },`
+- `components/recipes/AdminPanel.tsx:646: placeholder="Chọn danh mục"`
+- `components/recipes/AdminPanel.tsx:651: <span className="form-label">Sắp xếp</span>`
+- `components/recipes/AdminPanel.tsx:654: ariaLabel="Sắp xếp"`
+- `components/recipes/AdminPanel.tsx:658: { value: "newest", label: "Mới nhất" },`
+- `components/recipes/AdminPanel.tsx:659: { value: "oldest", label: "Cũ nhất" },`
+- `components/recipes/AdminPanel.tsx:660: { value: "alphabetAsc", label: "Tên A → Z" },`
+- `components/recipes/AdminPanel.tsx:661: { value: "alphabetDesc", label: "Tên Z → A" },`
+- `components/recipes/AdminPanel.tsx:662: { value: "commentsDesc", label: "Nhiều bình luận nhất" },`
+- `components/recipes/AdminPanel.tsx:663: { value: "commentsAsc", label: "Ít bình luận nhất" },`
+- `components/recipes/AdminPanel.tsx:665: placeholder="Chọn cách sắp xếp"`
+- `components/recipes/AdminPanel.tsx:672: Đang hiển thị <strong className="text-ink">{filteredCount}</strong>{" "}`
+- `components/recipes/AdminPanel.tsx:673: công thức phù hợp.`
+- `components/recipes/AdminPanel.tsx:684: Delete bộ lọc`
+- `components/recipes/AdminPanel.tsx:712: <Icon name="comment" size={14} /> Bình luận`
+- `components/recipes/AdminPanel.tsx:723: Quản lý tất cả`
+- `components/recipes/AdminPanel.tsx:749: See more {recipe.comments.length - 3} bình luận`
+- `components/recipes/AdminPanel.tsx:755: Chưa có bình luận.`
+- `components/recipes/AdminPanel.tsx:773: title="Not found công thức"`
+- `components/recipes/AdminPanel.tsx:774: description="Hãy thử thay đổi từ khóa hoặc bộ lọc danh mục."`
+- `components/recipes/AdminPanel.tsx:799: {comment.username || "Người dùng"}`
+- `components/recipes/AdminPanel.tsx:812: aria-label="Delete bình luận"`
+- `components/recipes/AdminPanel.tsx:813: title="Delete bình luận"`
+- `components/recipes/AdminPanel.tsx:858: <Icon name="search" size={15} /> Tìm bình luận`
+- `components/recipes/AdminPanel.tsx:864: placeholder="Nội dung, người dùng, ID hoặc công thức..."`
+- `components/recipes/AdminPanel.tsx:876: { value: "all", label: "Tất cả công thức" },`
+- `components/recipes/AdminPanel.tsx:885: placeholder="Chọn cách sắp xếp"`
+- `components/recipes/AdminPanel.tsx:890: <span className="form-label">Sắp xếp</span>`
+- `components/recipes/AdminPanel.tsx:893: ariaLabel="Sắp xếp"`
+- `components/recipes/AdminPanel.tsx:897: { value: "newest", label: "Mới nhất" },`
+- `components/recipes/AdminPanel.tsx:898: { value: "oldest", label: "Cũ nhất" },`
+- `components/recipes/AdminPanel.tsx:899: { value: "userAsc", label: "Tên người dùng A → Z" },`
+- `components/recipes/AdminPanel.tsx:900: { value: "recipeAsc", label: "Tên công thức A → Z" },`
+- `components/recipes/AdminPanel.tsx:902: placeholder="Chọn cách sắp xếp"`
+- `components/recipes/AdminPanel.tsx:909: Đang hiển thị <strong className="text-ink">{totalFiltered}</strong>{" "}`
+- `components/recipes/AdminPanel.tsx:910: bình luận phù hợp.`
+- `components/recipes/AdminPanel.tsx:918: Đặt lại bộ lọc`
+- `components/recipes/AdminPanel.tsx:936: {comment.username || "Người dùng"}`
+- `components/recipes/AdminPanel.tsx:944: Khách`
+- `components/recipes/AdminPanel.tsx:979: ? "Đang xóa..."`
+- `components/recipes/AdminPanel.tsx:980: : "Delete bình luận"}`
+- `components/recipes/AdminPanel.tsx:997: title="Không có bình luận phù hợp"`
+- `components/recipes/AdminPanel.tsx:998: description="Thử thay đổi từ khóa, công thức hoặc cách sắp xếp."`
+- `components/recipes/RecipeDetail.tsx:34: name: "Bách hóa XANH",`
+- `components/recipes/RecipeDetail.tsx:69: name: "Ba Sạch",`
+- `components/recipes/RecipeDetail.tsx:77: * Longer multi-word units come first so "muỗng canh" is removed as a whole.`
+- `components/recipes/RecipeDetail.tsx:79: const INGREDIENT_UNIT_PATTERN = String.raw`(?:muỗng\s+cà\s+phê|muỗng\s+canh|muỗng\s+cafe|thìa\s+cà\s+phê|thìa\s+canh|tablespoons?|teaspoons?|tbsp|tsp|kilograms?|kilogrammes?|kg|grams?|grammes?|gam|gr|g|milligrams?|mg|millilit(?:er|re)s?|ml|`
+- `components/recipes/RecipeDetail.tsx:82: const INGREDIENT_QUANTITY_PATTERN = String.raw`(?:\d+\s+\d+\s*\/\s*\d+|\d+(?:[.,]\d+)?(?:\s*(?:-|–|—|đến)\s*\d+(?:[.,]\d+)?)?(?:\s*\/\s*\d+(?:[.,]\d+)?)?|[¼½¾⅓⅔⅛⅜⅝⅞])`;`
+- `components/recipes/RecipeDetail.tsx:88: *   "Bột mì 250g"          -> "Bột mì"`
+- `components/recipes/RecipeDetail.tsx:89: *   "250 g bột mì"         -> "bột mì"`
+- `components/recipes/RecipeDetail.tsx:90: *   "2 quả trứng gà"       -> "trứng gà"`
+- `components/recipes/RecipeDetail.tsx:91: *   "1/2 muỗng cà phê muối" -> "muối"`
+- `components/recipes/RecipeDetail.tsx:98: // Remove parenthetical quantity notes such as "(250g)" or "(2 quả)".`
+- `components/recipes/RecipeDetail.tsx:105: // Remove a quantity/unit prefix, e.g. "250 g bột mì" or "2 quả trứng".`
+- `components/recipes/RecipeDetail.tsx:107: String.raw`^\s*(?:(?:khoảng|tầm|chừng|about|approximately)\s*)?${quantity}\s*(?:${unit})?\s*`,`
+- `components/recipes/RecipeDetail.tsx:112: // Remove a quantity/unit suffix, e.g. "Bột mì 250g" or "Muối: 1/2 thìa cà phê".`
+- `components/recipes/RecipeDetail.tsx:114: String.raw`\s*(?:[:=,;\-–—]\s*)?(?:(?:khoảng|tầm|chừng|about|approximately)\s*)?${quantity}\s*${unit}\s*$`,`
+- `components/recipes/RecipeDetail.tsx:132: * Example: "Bột mì site:bachhoaxanh.com", not "Bột mì 250g ...".`
+- `components/recipes/RecipeDetail.tsx:146: const query = `${storeName} gần tôi`;`
+- `components/recipes/RecipeDetail.tsx:160: ? `chợ thực phẩm bán ${keyword} gần tôi``
+- `components/recipes/RecipeDetail.tsx:161: : "chợ thực phẩm gần tôi";`
+- `components/recipes/RecipeDetail.tsx:205: return "vừa xong";`
+- `components/recipes/RecipeDetail.tsx:209: return `${elapsedMinutes} phút trước`;`
+- `components/recipes/RecipeDetail.tsx:215: return `${elapsedHours} giờ trước`;`
+- `components/recipes/RecipeDetail.tsx:220: return `${elapsedDays} ngày trước`;`
+- `components/recipes/RecipeDetail.tsx:389: <span className="text-xs font-bold text-muted">Mua tại:</span>`
+- `components/recipes/RecipeDetail.tsx:416: Cửa hàng {place.name} gần bạn`
+- `components/recipes/RecipeDetail.tsx:426: Chợ gần bạn`
+- `components/recipes/RecipeDetail.tsx:434: {copied ? "Đã sao chép danh sách" : "Sao chép danh sách đi chợ"}`
+- `components/recipes/RecipeDetail.tsx:450: aria-label={`Tìm ${keywords[index]} tại ${place.name}`}`
+- `components/recipes/RecipeDetail.tsx:453: Xem giá`
+- `components/recipes/RecipeDetail.tsx:460: Giá bán, tồn kho và địa chỉ thực tế cần được xác nhận trên website hoặc`
+- `components/recipes/RecipeDetail.tsx:461: bản đồ.`
+- `components/recipes/RecipeDetail.tsx:477: const author = initialData?.author ?? "Tác giả ẩn danh";`
+- `components/recipes/RecipeDetail.tsx:539: ? currentUser.displayName || "Người dùng ẩn danh"`
+- `components/recipes/RecipeDetail.tsx:540: : guestName.trim() || "Khách";`
+- `components/recipes/RecipeDetail.tsx:563: setError("Không thể đăng bình luận.");`
+- `components/recipes/RecipeDetail.tsx:572: <Alert tone="warning">Not found công thức.</Alert>`
+- `components/recipes/RecipeDetail.tsx:642: Tác giả: {author}`
+- `components/recipes/RecipeDetail.tsx:655: Share công thức`
+- `components/recipes/RecipeDetail.tsx:665: Video hướng dẫn`
+- `components/recipes/RecipeDetail.tsx:689: Nguồn tham khảo`
+- `components/recipes/RecipeDetail.tsx:693: Recipes này tham khảo từ video YouTube gốc. Bạn có thể xem`
+- `components/recipes/RecipeDetail.tsx:694: video để đối chiếu nguyên liệu và các bước thực hiện.`
+- `components/recipes/RecipeDetail.tsx:703: Xem video gốc trên YouTube`
+- `components/recipes/RecipeDetail.tsx:707: Video và nội dung gốc thuộc về chủ sở hữu tương ứng.`
+- `components/recipes/RecipeDetail.tsx:770: Dinh dưỡng{" "}`
+- `components/recipes/RecipeDetail.tsx:772: (mỗi khẩu phần)`
+- `components/recipes/RecipeDetail.tsx:851: Bình luận{" "}`
+- `components/recipes/RecipeDetail.tsx:866: {comment.username || "Người dùng"}`
+- `components/recipes/RecipeDetail.tsx:885: Chưa có bình luận. Hãy là người đầu tiên góp chuyện!`
+- `components/recipes/RecipeDetail.tsx:903: placeholder="Tên của bạn (không bắt buộc)"`
+- `components/recipes/RecipeDetail.tsx:904: aria-label="Tên của bạn"`
+- `components/recipes/RecipeDetail.tsx:914: placeholder="Thêm bình luận của bạn..."`
+- `components/recipes/RecipeDetail.tsx:922: "Đang đăng..."`
+- `components/recipes/RecipeDetail.tsx:926: Đăng bình luận`
+- `components/recipes/RecipeDetail.tsx:940: Quản lý công thức`
+- `components/recipes/RecipeDetail.tsx:949: Chỉnh sửa`
+- `components/recipes/RecipeDetail.tsx:957: <h2 className="subheading text-lg">Món cùng danh mục</h2>`
+- `components/recipes/RecipeDetail.tsx:983: aria-label="Trang trước"`
+- `components/recipes/RecipeDetail.tsx:996: aria-label="Trang tiếp theo"`
+- `components/recipes/RecipeExplorer.tsx:101: .catch(() => setError("Không thể tải công thức. Vui lòng thử lại."))`
+- `components/recipes/RecipeExplorer.tsx:186: <span className="sr-only">Search công thức</span>`
+- `components/recipes/RecipeExplorer.tsx:195: placeholder="Tìm món ăn, nguyên liệu, tên công thức..."`
+- `components/recipes/RecipeExplorer.tsx:211: <h2 className="section-title">Khám phá công thức</h2>`
+- `components/recipes/RecipeExplorer.tsx:213: Từ món cơm gia đình đến món đãi khách — tìm cảm hứng cho mâm cơm hôm`
+- `components/recipes/RecipeExplorer.tsx:222: <Icon name="refresh" size={16} /> Đặt lại`
+- `components/recipes/RecipeExplorer.tsx:236: <span className="sr-only">Danh mục</span>`
+- `components/recipes/RecipeExplorer.tsx:239: ariaLabel="Danh mục"`
+- `components/recipes/RecipeExplorer.tsx:245: { value: "", label: "Tất cả danh mục" },`
+- `components/recipes/RecipeExplorer.tsx:251: placeholder="Chọn danh mục"`
+- `components/recipes/RecipeExplorer.tsx:255: <span className="sr-only">Sắp xếp</span>`
+- `components/recipes/RecipeExplorer.tsx:258: ariaLabel="Sắp xếp"`
+- `components/recipes/RecipeExplorer.tsx:265: { value: "alphabetAsc", label: "Tên A → Z" },`
+- `components/recipes/RecipeExplorer.tsx:266: { value: "alphabetDesc", label: "Tên Z → A" },`
+- `components/recipes/RecipeExplorer.tsx:267: { value: "dateDesc", label: "Mới nhất" },`
+- `components/recipes/RecipeExplorer.tsx:268: { value: "dateAsc", label: "Cũ nhất" },`
+- `components/recipes/RecipeExplorer.tsx:270: placeholder="Chọn cách sắp xếp"`
+- `components/recipes/RecipeExplorer.tsx:277: <LoadingBlock label="Đang mở sổ tay món ngon..." />`
+- `components/recipes/RecipeExplorer.tsx:282: <strong>Chưa có công thức phù hợp.</strong>`
+- `components/recipes/RecipeExplorer.tsx:283: <span>Thử đổi từ khóa hoặc chọn “Tất cả danh mục”.</span>`
+- `components/recipes/RecipeExplorer.tsx:288: Hiển thị <strong className="text-ink">{current.length}</strong> /{" "}`
+- `components/recipes/RecipeExplorer.tsx:289: {filtered.length} công thức`
+- `components/site/BackToTop.tsx:30: aria-label="Về đầu trang"`
+- `components/site/Footer.tsx:14: Save giữ những món ngon, câu chuyện và ký ức quanh mâm cơm Việt.`
+- `components/site/Footer.tsx:20: Giới thiệu{" "}`
+- `components/site/Footer.tsx:24: Liên hệ{" "}`
+- `components/site/Footer.tsx:33: Phạm Tùng`
+- `components/site/ContactForm.tsx:49: const note = "\n\n[...] (nội dung đầy đủ đã được sao chép, hãy dán vào đây)";`
+- `components/site/ContactForm.tsx:73: `Họ tên: ${cleanName}`,`
+- `components/site/ContactForm.tsx:75: `Chủ đề: ${topic}`,`
+- `components/site/ContactForm.tsx:164: form: "Chưa cấu hình email nhận thư (NEXT_PUBLIC_CONTACT_EMAIL). Vui lòng thử lại sau.",`
+- `components/site/ContactForm.tsx:190: <Icon name="user" size={16} /> Họ tên`
+- `components/site/ContactForm.tsx:208: placeholder="Nguyễn Văn A"`
+- `components/site/ContactForm.tsx:215: <Icon name="mail" size={16} /> Email của bạn`
+- `components/site/ContactForm.tsx:243: <Icon name="tag" size={16} /> Chủ đề`
+- `components/site/ContactForm.tsx:248: ariaLabel="Chọn chủ đề"`
+- `components/site/ContactForm.tsx:252: placeholder="Chọn chủ đề"`
+- `components/site/ContactForm.tsx:258: <Icon name="comment" size={16} /> Nội dung`
+- `components/site/ContactForm.tsx:277: placeholder="Bạn muốn nhắn gì với chúng tôi?"`
+- `components/site/ContactForm.tsx:283: ? `Tối thiểu ${MIN_MESSAGE} ký tự · ``
+- `components/site/ContactForm.tsx:294: Chúng tôi đã mở ứng dụng email của bạn với nội dung soạn sẵn. Hãy`
+
+Only the first 500 of 787 lines are listed.
