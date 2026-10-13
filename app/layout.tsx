@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Script from "next/script";
+import { Fraunces } from "next/font/google";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import "./globals.css";
 import "@/styles/themed-select.css";
@@ -10,6 +11,12 @@ import BackToTop from "@/components/site/BackToTop";
 import AlpineProvider from "@/components/site/AlpineProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { SITE_NAME } from "@/lib/seo";
+
+const fraunces = Fraunces({
+  subsets: ["latin", "vietnamese"],
+  display: "swap",
+  variable: "--font-fraunces",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -25,7 +32,8 @@ export const metadata: Metadata = {
       default: `${SITE_NAME} — Dishes & memories`,
       template: `%s | ${SITE_NAME}`,
     },
-    description: "Preserving delicious dishes and stories around the Vietnamese family table.",
+    description:
+      "Preserving delicious dishes and stories around the Vietnamese family table.",
     type: "website",
     url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
     siteName: SITE_NAME,
@@ -45,7 +53,7 @@ export default function RootLayout({
 }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body className={fraunces.variable} suppressHydrationWarning>
         <Script
           id="adsense-script"
           async
