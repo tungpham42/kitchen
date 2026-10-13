@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Script from "next/script";
-import { Fraunces } from "next/font/google";
+import { Fraunces, Quicksand } from "next/font/google";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import "./globals.css";
 import "@/styles/themed-select.css";
@@ -18,6 +18,12 @@ const fraunces = Fraunces({
   subsets: ["latin", "vietnamese"],
   display: "swap",
   variable: "--font-fraunces",
+});
+
+const quicksand = Quicksand({
+  subsets: ["latin", "vietnamese"],
+  display: "swap",
+  variable: "--font-quicksand",
 });
 
 export const metadata: Metadata = {
@@ -54,7 +60,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={fraunces.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${quicksand.variable}`}
+      suppressHydrationWarning
+    >
       <body suppressHydrationWarning>
         <Script
           id="adsense-script"
