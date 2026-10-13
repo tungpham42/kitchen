@@ -1,0 +1,180 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import Icon from "@/components/ui/Icon";
+import Alert from "@/components/ui/Alert";
+import PriceComparisonResults from "@/components/recipes/PriceComparisonResults";
+import {
+  SHOPPING_PLACES,
+  getIngredientKeyword,
+  getIngredientSearchUrl,
+  getStoreAddressUrl,
+  getMarketAddressUrl,
+} from "@/lib/recipes/shopping";
+import type { PriceComparisonReport } from "@/lib/recipes/price-comparison";
+
+/**
+ * Shopping, with the fewest possible steps:
+ *  - pick a retailer ONCE for the whole recipe,
+ *  - every ingredient then has a single direct link to that retailer,
+ *  - one button copies the whole shopping list.
+ * (Previously: open a modal per ingredient -> pick a retailer -> open a
+ * Google search in a new tab.)
+ */
+export default function ShoppingPanel({ ingredients }: { ingredients: string[] }) {
+  const [placeIndex, setPlaceIndex] = useState(0);
+  const [copied, setCopied] = useState(false);
+  const [comparisonBusy, setComparisonBusy] = useState(false);
+  const [comparison, setComparison] = useState<PriceComparisonReport | null>(null);
+  const [comparisonError, setComparisonError] = useState("");
+  const place = SHOPPING_PLACES[placeIndex];
+
+  const keywords = useMemo(
+    () => ingredients.map((item) => getIngredientKeyword(item)),
+    [ingredients],
+  );
+
+  async function copyList() {
+    try {
+      await navigator.clipboard.writeText(
+        ingredients.map((item) => `- ${item}`).join("\n"),
+      );
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard unavailable (insecure context / denied): ignore silently.
+    }
+  }
+
+  async function comparePrices() {
+    if (comparisonBusy) return;
+    if (ingredients.length > 20) {
+      setComparisonError("You can compare prices for up to 20 ingredients at a time.");
+      return;
+    }
+
+    setComparisonBusy(true);
+    setComparison(null);
+    setComparisonError("");
+    try {
+      const response = await fetch("/api/price-comparison", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ingredients }),
+      });
+      const data = (await response.json().catch(() => null)) as
+        | { comparison?: PriceComparisonReport; error?: string }
+        | null;
+
+      if (!response.ok) {
+        throw new Error(data?.error || "Unable to compare prices right now.");
+      }
+      if (!data?.comparison) {
+        throw new Error("The AI returned an invalid price comparison result.");
+      }
+      setComparison(data.comparison);
+    } catch (err) {
+      setComparisonError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while comparing prices. Please try again.",
+      );
+    } finally {
+      setComparisonBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-4 rounded-2xl border border-border bg-card p-3 sm:p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs font-bold text-muted">Shop at:</span>
+
+        {SHOPPING_PLACES.map((item, index) => (
+          <button
+            key={item.name}
+            type="button"
+            aria-pressed={index === placeIndex}
+            onClick={() => setPlaceIndex(index)}
+            className={`rounded-full border px-3 py-1 text-xs font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lacquer ${
+              index === placeIndex
+                ? "border-lacquer bg-lacquer text-white"
+                : "border-border bg-cream/60 text-ink hover:bg-cream"
+            }`}
+          >
+            {item.name}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold">
+        <a
+          href={getStoreAddressUrl(place.name)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-bamboo underline underline-offset-4"
+        >
+          <Icon name="map-pin" size={13} />
+          Find nearby {place.name} locations
+        </a>
+
+        <a
+          href={getMarketAddressUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-bamboo underline underline-offset-4"
+        >
+          <Icon name="map-pin" size={13} />
+          Nearby markets
+        </a>
+
+        <button
+          type="button"
+          onClick={copyList}
+          className="inline-flex items-center gap-1 text-lacquer underline underline-offset-4"
+        >
+          {copied ? "Shopping list copied" : "Copy shopping list"}
+        </button>
+        <button
+          type="button"
+          onClick={comparePrices}
+          disabled={comparisonBusy || ingredients.length === 0}
+          className="inline-flex items-center gap-1 rounded-lg bg-lacquer px-3 py-2 text-xs font-bold text-white transition hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
+        >
+          {comparisonBusy ? "Comparing prices..." : "Compare prices"}
+        </button>
+      </div>
+
+      <ul className="mt-2 divide-y divide-dashed divide-border">
+        {ingredients.map((item, index) => (
+          <li
+            key={`${item}-${index}`}
+            className="flex items-center justify-between gap-3 py-2 text-sm"
+          >
+            <span className="text-ink">{item}</span>
+
+            <a
+              href={getIngredientSearchUrl(keywords[index], place.domain)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Search for ${keywords[index]} at ${place.name}`}
+              className="shrink-0 rounded-lg border border-border bg-cream/50 px-2.5 py-1 text-xs font-bold text-lacquer transition hover:bg-cream"
+            >
+              View prices
+            </a>
+          </li>
+        ))}
+      </ul>
+      {comparisonError && (
+        <div className="mt-3">
+          <Alert tone="warning">{comparisonError}</Alert>
+        </div>
+      )}
+      {comparison && <PriceComparisonResults report={comparison} />}
+
+      <p className="pt-2 text-xs leading-5 text-muted">
+        Prices, stock availability, and store locations should be verified on the retailer’s website or
+        map.
+      </p>
+    </div>
+  );
+}
