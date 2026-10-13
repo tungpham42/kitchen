@@ -2,8 +2,6 @@
 
 import { useMemo, useState } from "react";
 import Icon from "@/components/ui/Icon";
-import Alert from "@/components/ui/Alert";
-import PriceComparisonResults from "@/components/recipes/PriceComparisonResults";
 import {
   SHOPPING_PLACES,
   getIngredientKeyword,
@@ -11,7 +9,6 @@ import {
   getStoreAddressUrl,
   getMarketAddressUrl,
 } from "@/lib/recipes/shopping";
-import type { PriceComparisonReport } from "@/lib/recipes/price-comparison";
 
 /**
  * Shopping, with the fewest possible steps:
@@ -21,12 +18,13 @@ import type { PriceComparisonReport } from "@/lib/recipes/price-comparison";
  * (Previously: open a modal per ingredient -> pick a retailer -> open a
  * Google search in a new tab.)
  */
-export default function ShoppingPanel({ ingredients }: { ingredients: string[] }) {
+export default function ShoppingPanel({
+  ingredients,
+}: {
+  ingredients: string[];
+}) {
   const [placeIndex, setPlaceIndex] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [comparisonBusy, setComparisonBusy] = useState(false);
-  const [comparison, setComparison] = useState<PriceComparisonReport | null>(null);
-  const [comparisonError, setComparisonError] = useState("");
   const place = SHOPPING_PLACES[placeIndex];
 
   const keywords = useMemo(
@@ -43,44 +41,6 @@ export default function ShoppingPanel({ ingredients }: { ingredients: string[] }
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
       // Clipboard unavailable (insecure context / denied): ignore silently.
-    }
-  }
-
-  async function comparePrices() {
-    if (comparisonBusy) return;
-    if (ingredients.length > 20) {
-      setComparisonError("You can compare prices for up to 20 ingredients at a time.");
-      return;
-    }
-
-    setComparisonBusy(true);
-    setComparison(null);
-    setComparisonError("");
-    try {
-      const response = await fetch("/api/price-comparison", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ingredients }),
-      });
-      const data = (await response.json().catch(() => null)) as
-        | { comparison?: PriceComparisonReport; error?: string }
-        | null;
-
-      if (!response.ok) {
-        throw new Error(data?.error || "Unable to compare prices right now.");
-      }
-      if (!data?.comparison) {
-        throw new Error("The AI returned an invalid price comparison result.");
-      }
-      setComparison(data.comparison);
-    } catch (err) {
-      setComparisonError(
-        err instanceof Error
-          ? err.message
-          : "An error occurred while comparing prices. Please try again.",
-      );
-    } finally {
-      setComparisonBusy(false);
     }
   }
 
@@ -134,14 +94,6 @@ export default function ShoppingPanel({ ingredients }: { ingredients: string[] }
         >
           {copied ? "Shopping list copied" : "Copy shopping list"}
         </button>
-        <button
-          type="button"
-          onClick={comparePrices}
-          disabled={comparisonBusy || ingredients.length === 0}
-          className="inline-flex items-center gap-1 rounded-lg bg-lacquer px-3 py-2 text-xs font-bold text-white transition hover:opacity-90 disabled:cursor-wait disabled:opacity-60"
-        >
-          {comparisonBusy ? "Comparing prices..." : "Compare prices"}
-        </button>
       </div>
 
       <ul className="mt-2 divide-y divide-dashed divide-border">
@@ -164,16 +116,10 @@ export default function ShoppingPanel({ ingredients }: { ingredients: string[] }
           </li>
         ))}
       </ul>
-      {comparisonError && (
-        <div className="mt-3">
-          <Alert tone="warning">{comparisonError}</Alert>
-        </div>
-      )}
-      {comparison && <PriceComparisonResults report={comparison} />}
 
       <p className="pt-2 text-xs leading-5 text-muted">
-        Prices, stock availability, and store locations should be verified on the retailer’s website or
-        map.
+        Prices, stock availability, and store locations should be verified on
+        the retailer’s website or map.
       </p>
     </div>
   );
