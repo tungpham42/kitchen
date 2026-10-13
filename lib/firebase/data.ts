@@ -98,29 +98,43 @@ export async function updateCommentsForUsername(
   username: string,
 ) {
   const recipesSnapshot = await getDocs(collection(db, "recipes"));
-  const jobs: Promise<unknown>[] = [];
-  for (const recipeDoc of recipesSnapshot.docs) {
-    const commentsSnapshot = await getDocs(
-      query(
-        collection(db, "recipes", recipeDoc.id, "comments"),
-        where("userId", "==", userId),
-      ),
-    );
-    for (const comment of commentsSnapshot.docs) {
-      jobs.push(updateDoc(comment.ref, { username }));
-    }
-  }
-  await Promise.all(jobs);
-  return jobs.length;
+  // Query every recipe's comments in parallel instead of one by one.
+  const perRecipe = await Promise.all(
+    recipesSnapshot.docs.map(async (recipeDoc) => {
+      const commentsSnapshot = await getDocs(
+        query(
+          collection(db, "recipes", recipeDoc.id, "comments"),
+          where("userId", "==", userId),
+        ),
+      );
+      // Skip writes for comments that already carry the right name.
+      const stale = commentsSnapshot.docs.filter(
+        (comment) => comment.data().username !== username,
+      );
+      await Promise.all(
+        stale.map((comment) => updateDoc(comment.ref, { username })),
+      );
+      return stale.length;
+    }),
+  );
+  return perRecipe.reduce((total, count) => total + count, 0);
 }
 
 export async function createOrUpdateUser(
   user: User,
   extra: Record<string, unknown> = {},
 ) {
-  const username = String(extra.username ?? user.displayName ?? "User");
-  const data = await upsertUserDocument(user, { ...extra, username });
-  if (!user.isAnonymous) await updateCommentsForUsername(user.uid, username);
+  const { isNewUser, ...profileExtra } = extra;
+  const username = String(
+    profileExtra.username ?? user.displayName ?? "Người dùng",
+  );
+  const data = await upsertUserDocument(user, { ...profileExtra, username });
+  // Keeping old comments' usernames in sync scans every recipe, so it must not
+  // block sign-in/sign-up. Run it in the background and ignore failures.
+  // A brand-new account has no comments to update.
+  if (!user.isAnonymous && !isNewUser) {
+    void updateCommentsForUsername(user.uid, username).catch(() => {});
+  }
   return data;
 }
 
@@ -140,14 +154,14 @@ export async function addRecipeComment(
   comment: {
     text: string;
     username?: string;
-    userId?: string | null; // guest: undefined or null are both fine
+    userId?: string | null; // khách: undefined hoặc null đều được
   },
 ) {
   const createdAt = new Date().toISOString();
   const ref = await addDoc(collection(db, "recipes", recipeId, "comments"), {
     text: comment.text,
     username: comment.username ?? "Guest",
-    userId: comment.userId ?? null, // never leave undefined
+    userId: comment.userId ?? null, // không bao giờ để undefined
     createdAt,
   });
   return { id: ref.id, createdAt };
@@ -185,9 +199,9 @@ export async function recipeSlugExists(slug: string, ignoreId?: string) {
 }
 
 export async function getAuthorName(userId?: string) {
-  if (!userId) return "Anonymous author";
+  if (!userId) return "Anonymous";
   const profile = await fetchUserProfile(userId);
-  return String(profile?.username ?? profile?.displayName ?? "Anonymous author");
+  return String(profile?.username ?? profile?.displayName ?? "Anonymous");
 }
 
 export { auth };
