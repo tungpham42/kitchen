@@ -52,8 +52,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={fraunces.variable} suppressHydrationWarning>
+    <html lang="en" className={fraunces.variable} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Script
           id="adsense-script"
           async
