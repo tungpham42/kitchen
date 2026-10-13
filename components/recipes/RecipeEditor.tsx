@@ -32,6 +32,7 @@ type GeneratedRecipe = Pick<
   Recipe,
   "title" | "description" | "category" | "ingredients" | "steps"
 > & {
+  recipeYield?: string;
   nutrition?: NonNullable<Recipe["nutrition"]>;
 };
 
@@ -51,6 +52,7 @@ function EditorForm({
   const [ingredients, setIngredients] = useState("");
   const [steps, setSteps] = useState("");
   const [category, setCategory] = useState<Recipe["category"]>("Dinner");
+  const [recipeYield, setRecipeYield] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [transcriptInput, setTranscriptInput] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -78,6 +80,7 @@ function EditorForm({
         setIngredients(recipe.ingredients.join("\n"));
         setSteps(recipe.steps.join("\n"));
         setCategory(recipe.category);
+        setRecipeYield(recipe.recipeYield ?? "");
         setYoutubeUrl(recipe.youtubeUrl ?? "");
         setImageUrl(recipe.imageUrl ?? "");
         setNutrition(nutritionToForm(recipe.nutrition));
@@ -124,7 +127,7 @@ function EditorForm({
     if (
       hasExistingContent &&
       !window.confirm(
-        "AI will replace the current title, description, ingredients, instructions, category, and nutrition. Do you want to continue?",
+        "AI will replace the current title, description, servings, ingredients, instructions, category, and nutrition. Do you want to continue?",
       )
     ) {
       return;
@@ -157,7 +160,9 @@ function EditorForm({
         };
       };
       if (!response.ok) {
-        throw new Error(result.error || "Could not generate content from this video.");
+        throw new Error(
+          result.error || "Could not generate content from this video.",
+        );
       }
       const recipe = result.recipe;
       if (
@@ -167,12 +172,15 @@ function EditorForm({
         !Array.isArray(recipe.ingredients) ||
         !Array.isArray(recipe.steps)
       ) {
-        throw new Error("The AI returned an incomplete draft. Please try again.");
+        throw new Error(
+          "The AI returned an incomplete draft. Please try again.",
+        );
       }
 
       setTitle(recipe.title);
       setDescription(recipe.description);
       setCategory(recipe.category);
+      setRecipeYield(recipe.recipeYield?.trim() ?? "");
       setIngredients(recipe.ingredients.join("\n"));
       setSteps(recipe.steps.join("\n"));
       setNutrition(nutritionToForm(recipe.nutrition));
@@ -181,7 +189,9 @@ function EditorForm({
       );
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Could not generate the recipe with AI.",
+        err instanceof Error
+          ? err.message
+          : "Could not generate the recipe with AI.",
       );
     } finally {
       setAiBusy(false);
@@ -212,6 +222,7 @@ function EditorForm({
         title: title.trim(),
         description: description.trim(),
         category,
+        recipeYield: recipeYield.trim(),
         ingredients: ingredients
           .split("\n")
           .map((x) => x.trim())
@@ -232,12 +243,12 @@ function EditorForm({
       } else {
         await createRecipe(payload as Omit<Recipe, "id">);
       }
-      setSuccess(
-        mode === "edit" ? "Recipe updated." : "New recipe added.",
-      );
+      setSuccess(mode === "edit" ? "Recipe updated." : "New recipe added.");
       window.setTimeout(() => router.push(`/recipes/${finalSlug}`), 500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save the recipe.");
+      setError(
+        err instanceof Error ? err.message : "Could not save the recipe.",
+      );
     } finally {
       setBusy(false);
     }
@@ -249,13 +260,16 @@ function EditorForm({
     <div className="mx-auto max-w-4xl">
       <div className="mb-7 flex flex-col gap-2">
         <span className="eyebrow">
-          <Icon name={mode === "edit" ? "edit" : "plus"} size={15} /> Kitchen notebook
+          <Icon name={mode === "edit" ? "edit" : "plus"} size={15} /> Kitchen
+          notebook
         </span>
         <h1 className="section-title">
           {mode === "edit" ? "Edit recipe" : "Add a recipe"}
         </h1>
         <p className="text-sm leading-6 text-muted">
-          Write down delicious dishes in a way that is easy to read, easy to cook, and easy to pass on to loved ones. You can also generate a draft from a YouTube video with AI.
+          Write down delicious dishes in a way that is easy to read, easy to
+          cook, and easy to pass on to loved ones. You can also generate a draft
+          from a YouTube video with AI.
         </p>
       </div>
       <div className="rounded-[2rem] border border-border bg-card p-5 shadow-sm sm:p-8">
@@ -313,6 +327,21 @@ function EditorForm({
                 placeholder="Select a category"
               />
             </label>
+            <label className="block">
+              <span className="form-label">
+                <Icon name="bowl" size={15} /> Servings{" "}
+                <span className="font-normal text-muted">
+                  (e.g. 4 or 4 servings)
+                </span>
+              </span>
+              <input
+                value={recipeYield}
+                onChange={(e) => setRecipeYield(e.target.value)}
+                className="form-input"
+                maxLength={60}
+                placeholder="4 servings"
+              />
+            </label>
             <div className="block">
               <label htmlFor="recipe-youtube-url" className="form-label">
                 <Icon name="youtube" size={15} /> Video YouTube
@@ -332,7 +361,8 @@ function EditorForm({
                 placeholder="https://www.youtube.com/..."
               />
               <p className="mt-2 text-xs leading-5 text-muted">
-                AI reads the video subtitles to draft the title, description, ingredients, instructions, and nutrition.
+                AI reads the video subtitles to draft the title, description,
+                servings, ingredients, instructions, and nutrition.
               </p>
             </div>
             <div className="md:col-span-2 rounded-2xl border border-border bg-cream/40 p-4 sm:p-5">
@@ -342,7 +372,8 @@ function EditorForm({
                     Generate content with AI
                   </h2>
                   <p className="mt-1 text-xs leading-5 text-muted">
-                    Use AI to create a draft for you to review; the recipe is not saved until you click the publish button.
+                    Use AI to create a draft for you to review; the recipe is
+                    not saved until you click the publish button.
                   </p>
                 </div>
                 <button
@@ -371,7 +402,8 @@ function EditorForm({
                   placeholder="Leave blank to let AI fetch the YouTube subtitles automatically. If the video has no subtitles or the server cannot read them, paste the dialogue/description here."
                 />
                 <span className="mt-1 block text-xs text-muted">
-                  {transcriptInput.length.toLocaleString("en-US")} / 60,000 characters
+                  {transcriptInput.length.toLocaleString("en-US")} / 60,000
+                  characters
                 </span>
               </label>
               {aiMessage && (
