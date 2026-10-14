@@ -5,7 +5,7 @@ import { SITE_NAME } from "@/lib/seo";
 
 const description =
   SITE_NAME +
-  " helps you discover recipes, create recipe drafts with AI from YouTube videos, plan weekly menus, prepare shopping lists, and preserve the stories around the Vietnamese family table.";
+  " helps you discover recipes, create recipe drafts with AI from YouTube videos or Facebook Reels, plan weekly menus, prepare shopping lists, and preserve the stories around the Vietnamese family table.";
 
 export const metadata: Metadata = {
   title: "About",
@@ -82,21 +82,21 @@ const features: Feature[] = [
   {
     icon: "book",
     title: "Cook step by step",
-    text: "Follow the ingredients and method, watch the video if there is one, consult the nutrition information provided, and find related dishes.",
+    text: "Follow the ingredients and method, watch the YouTube video or Facebook Reel if there is one, consult the nutrition information provided, and find related dishes.",
     href: "/guide",
     linkLabel: "View the guide",
   },
   {
     icon: "youtube",
     title: "Generate recipes with AI",
-    text: "Paste a YouTube video link and let AI help draft the title, description, ingredients, and cooking steps into a draft. If the subtitles cannot be fetched, you can add the dialogue or a description; please check carefully before saving.",
+    text: "Paste a YouTube video or Facebook Reel link and let AI help draft the title, description, ingredients, and cooking steps into a draft. If the subtitles or caption cannot be fetched, you can add the dialogue or a description; please check carefully before saving.",
     href: "/recipes/new",
     linkLabel: "Create a draft with AI",
   },
   {
     icon: "plus",
     title: "Record your own dishes",
-    text: "Enter recipes yourself with photos, ingredients, each step, and a YouTube video to keep your signature dishes or share your cooking experience with the community.",
+    text: "Enter recipes yourself with photos, ingredients, each step, and a YouTube video or Facebook Reel to keep your signature dishes or share your cooking experience with the community.",
     href: "/recipes/new",
     linkLabel: "Add a recipe manually",
   },
@@ -149,8 +149,9 @@ export default function AboutPage() {
           <p>
             Some days we know we want something delicious but cannot think of a
             dish. Other days we have chosen a dish but forget which ingredients
-            to buy. And sometimes, a family recipe lives only in memory or in an
-            old text message.
+            to buy. And sometimes, a family recipe lives only in memory, in an
+            old text message, or in a cooking Reel you once saw on Facebook and
+            can no longer find.
           </p>
           <p>
             {SITE_NAME} is designed to connect these tasks into one simple
@@ -184,19 +185,22 @@ export default function AboutPage() {
               id="about-ai-title"
               className="mt-2 font-serif text-2xl font-bold text-lacquer sm:text-3xl"
             >
-              Turn cooking videos into recipe drafts with AI
+              Turn cooking videos and Facebook Reels into recipe drafts with AI
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-muted">
-              No need to start from a blank page: enter a YouTube link and let
-              AI help sketch the dish description, ingredients, and preparation
-              steps. You can also paste the dialogue or a description manually
-              when the subtitles cannot be accessed.
+              No need to start from a blank page: enter a YouTube or Facebook
+              Reel link and let AI help sketch the dish description,
+              ingredients, and preparation steps. Saw a great dish in a Reel?
+              Paste its link before it disappears from your feed. You can also
+              paste the dialogue, caption, or a description manually when the
+              subtitles cannot be accessed.
             </p>
             <p className="mt-2 max-w-3xl text-sm leading-7 text-muted">
-              The generated content is not posted automatically. The cook
-              remains the final decision maker: please check the quantities, the
-              soundness of the steps, and the nutrition information before
-              saving the recipe.
+              Reels are short and often skip exact quantities, so the draft may
+              be less complete than one from a longer video. The generated
+              content is not posted automatically. The cook remains the final
+              decision maker: please check the quantities, the soundness of the
+              steps, and the nutrition information before saving the recipe.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link href="/recipes/new" className="btn-primary">

@@ -6,7 +6,7 @@ import { SITE_NAME } from "@/lib/seo";
 const description =
   "User guide for " +
   SITE_NAME +
-  ": find recipes, create dish drafts with AI from YouTube videos, plan weekly menus, prepare shopping lists, and view nutrition information.";
+  ": find recipes, create dish drafts with AI from YouTube videos or Facebook Reels, plan weekly menus, prepare shopping lists, and view nutrition information.";
 
 export const metadata: Metadata = {
   title: "User guide",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "User guide",
     description,
-    images: ["/huong-dan.jpg"],
+    images: ["/guide.jpg"],
   },
 };
 
@@ -58,7 +58,7 @@ const sections: GuideSection[] = [
     icon: "book",
     title: "Open a recipe and cook step by step",
     intro:
-      "Each recipe page is a cooking notebook: you can check the ingredients, follow the method, and watch the video if the author added a link.",
+      "Each recipe page is a cooking notebook: you can check the ingredients, follow the method, and watch the YouTube video or Facebook Reel if the author added a link.",
     steps: [
       "Read the description and prepare all the ingredients before you start.",
       "Check off ingredients and each step as you prepare or complete them.",
@@ -106,12 +106,13 @@ const sections: GuideSection[] = [
     icon: "plus",
     title: "Post a recipe or create a draft with AI",
     intro:
-      "You can record your family dishes, add images and YouTube video links. AI helps draft a recipe from a video to save you time.",
+      "You can record your family dishes, add images and YouTube or Facebook Reel links. AI helps draft a recipe from a video or Reel to save you time.",
     steps: [
       "Open Add a recipe and sign in or create an account if asked.",
       "Enter the dish name, description, and category; put each ingredient and each cooking step on its own line.",
-      "Paste the YouTube link and choose Generate recipe with AI. The generated content is a draft and is not posted until you save it yourself.",
-      "If the server cannot fetch the subtitles, paste the dialogue or description into the corresponding box. Not every video's subtitles can be read automatically.",
+      "Paste the YouTube or Facebook Reel link and choose Generate recipe with AI. The generated content is a draft and is not posted until you save it yourself.",
+      "If the server cannot fetch the subtitles or caption, paste the dialogue or description into the corresponding box. Not every video's or Reel's content can be read automatically, and private or restricted Facebook Reels cannot be accessed.",
+      "Reels are short and often leave out exact quantities, so fill in any missing amounts yourself.",
       "Carefully check the quantities, the process, and the nutrition information suggested by AI before posting the recipe.",
     ],
     action: { label: "Add a recipe", href: "/recipes/new" },
@@ -174,20 +175,22 @@ export default function GuidePage() {
               id="ai-recipe-title"
               className="mt-2 font-serif text-2xl font-bold text-lacquer sm:text-3xl"
             >
-              Generate recipes with AI from YouTube videos
+              Generate recipes with AI from YouTube videos and Facebook Reels
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-muted">
-              Paste a video link to let AI help draft the title, description,
-              ingredients, preparation steps, and nutrition information when
-              suitable data is available. If the server cannot fetch the
-              subtitles, you can paste the dialogue or a description into the
-              notes box as a reference source.
+              Paste a YouTube video or Facebook Reel link to let AI help draft
+              the title, description, ingredients, preparation steps, and
+              nutrition information when suitable data is available. If the
+              server cannot fetch the subtitles or caption, you can paste the
+              dialogue or a description into the notes box as a reference
+              source.
             </p>
             <p className="mt-2 max-w-3xl text-sm leading-7 text-muted">
               The result is only a draft in the form and is not posted
               automatically. Please check the source, quantities, cooking
               method, and nutrition estimates before saving; AI cannot guarantee
-              that every detail in the video is extracted accurately.
+              that every detail in the video or Reel is extracted accurately.
+              Short Reels in particular may omit amounts and timings.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link href="/recipes/new" className="btn-primary">
