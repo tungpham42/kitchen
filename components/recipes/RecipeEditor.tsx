@@ -20,7 +20,7 @@ import Alert, { LoadingBlock } from "@/components/ui/Alert";
 import ThemedSelect from "@/components/ui/ThemedSelect";
 import RequireAuth from "@/components/auth/RequireAuth";
 import { extractYouTubeId, resolveYouTubeThumbnail } from "@/lib/youtube";
-import { extractFacebookVideoUrl } from "@/lib/facebook";
+import { getVideoPlatform, normalizeVideoUrl } from "@/lib/video";
 import {
   EMPTY_NUTRITION_FORM,
   NUTRITION_FIELDS,
@@ -61,7 +61,7 @@ function EditorForm({
   const [steps, setSteps] = useState("");
   const [category, setCategory] = useState<Recipe["category"]>("Dinner");
   const [recipeYield, setRecipeYield] = useState("");
-  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [transcriptInput, setTranscriptInput] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -89,7 +89,7 @@ function EditorForm({
         setSteps(recipe.steps.join("\n"));
         setCategory(recipe.category);
         setRecipeYield(recipe.recipeYield ?? "");
-        setYoutubeUrl(recipe.youtubeUrl ?? "");
+        setVideoUrl(recipe.videoUrl ?? "");
         setImageUrl(recipe.imageUrl ?? "");
         setNutrition(nutritionToForm(recipe.nutrition));
       })
@@ -97,9 +97,9 @@ function EditorForm({
       .finally(() => setInitialLoading(false));
   }, [mode, slug]);
 
-  // Automatically use the YouTube video thumbnail as the cover image when the user hasn't chosen or pasted one.
+  // Automatically use the YouTube thumbnail when the user has not selected or provided an image.
   useEffect(() => {
-    const videoId = extractYouTubeId(youtubeUrl);
+    const videoId = extractYouTubeId(videoUrl);
     if (!videoId) return;
     if (imageFile) return;
     if (imageUrl.trim() && !imageAuto) return;
@@ -113,18 +113,18 @@ function EditorForm({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [youtubeUrl, imageFile]);
+  }, [videoUrl, imageFile]);
 
   const generatedSlug = useMemo(() => slugify(title), [title]);
 
-  async function generateFromYouTube() {
+  async function generateFromVideo() {
     if (!currentUser) {
       setError("Please sign in before generating a recipe with AI.");
       return;
     }
-    if (!extractYouTubeId(youtubeUrl) && !extractFacebookVideoUrl(youtubeUrl)) {
+    if (!getVideoPlatform(videoUrl)) {
       setError(
-        "Please enter a valid YouTube or Facebook Reel URL before generating content.",
+        "Enter a valid YouTube video or Facebook Reel URL before generating content.",
       );
       return;
     }
@@ -154,7 +154,7 @@ function EditorForm({
           Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
-          videoUrl: youtubeUrl.trim(),
+          videoUrl: normalizeVideoUrl(videoUrl) ?? "",
           transcript: transcriptInput.trim(),
         }),
       });
@@ -223,6 +223,11 @@ function EditorForm({
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!currentUser) return;
+    const normalizedVideoUrl = normalizeVideoUrl(videoUrl);
+    if (videoUrl.trim() && !normalizedVideoUrl) {
+      setError("Enter a valid YouTube or Facebook video URL.");
+      return;
+    }
     setBusy(true);
     setError("");
     setSuccess("");
@@ -259,7 +264,7 @@ function EditorForm({
           .split("\n")
           .map((x) => x.trim())
           .filter(Boolean),
-        youtubeUrl: youtubeUrl.trim(),
+        videoUrl: normalizedVideoUrl ?? "",
         imageUrl: finalImage,
         nutrition: formToNutrition(nutrition),
         slug: finalSlug,
@@ -297,7 +302,7 @@ function EditorForm({
         <p className="text-sm leading-6 text-muted">
           Write down delicious dishes in a way that is easy to read, easy to
           cook, and easy to pass on to loved ones. You can also generate a draft
-          from a YouTube video with AI.
+          from a video link with AI.
         </p>
       </div>
       <div className="rounded-[2rem] border border-border bg-card p-5 shadow-sm sm:p-8">
@@ -371,15 +376,15 @@ function EditorForm({
               />
             </label>
             <div className="block md:col-span-2">
-              <label htmlFor="recipe-youtube-url" className="form-label">
-                <Icon name="youtube" size={15} /> Video link (YouTube or
+              <label htmlFor="recipe-video-url" className="form-label">
+                <Icon name="youtube" size={15} /> Video URL (YouTube or
                 Facebook Reel)
               </label>
               <input
-                id="recipe-youtube-url"
-                value={youtubeUrl}
+                id="recipe-video-url"
+                value={videoUrl}
                 onChange={(e) => {
-                  setYoutubeUrl(e.target.value);
+                  setVideoUrl(e.target.value);
                   setAiMessage("");
                   if (imageAuto) {
                     setImageUrl("");
@@ -387,12 +392,11 @@ function EditorForm({
                   }
                 }}
                 className="form-input"
-                placeholder="https://www.youtube.com/... or https://www.facebook.com/reel/..."
+                placeholder="https://youtu.be/... or https://www.facebook.com/reel/..."
               />
               <p className="mt-2 text-xs leading-5 text-muted">
-                AI reads the YouTube subtitles (or the Facebook Reel caption) to
-                draft the title, description, servings, ingredients,
-                instructions, and nutrition.
+                AI uses YouTube subtitles (or Facebook Reel captions) to draft the
+                title, description, servings, ingredients, instructions, and nutrition information.
               </p>
             </div>
             <div className="md:col-span-2 rounded-2xl border border-border bg-cream/40 p-4 sm:p-5">
@@ -408,8 +412,8 @@ function EditorForm({
                 </div>
                 <button
                   type="button"
-                  onClick={() => void generateFromYouTube()}
-                  disabled={aiBusy || busy || !youtubeUrl.trim()}
+                  onClick={() => void generateFromVideo()}
+                  disabled={aiBusy || busy || !videoUrl.trim()}
                   className="btn-primary shrink-0 justify-center disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {aiBusy ? (
