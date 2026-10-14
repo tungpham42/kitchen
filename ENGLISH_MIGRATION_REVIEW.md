@@ -52,10 +52,10 @@ Potential Vietnamese lines found: **787**
 - `lib/contactValidation.ts:23: if (v.length > 80) return "Họ tên tối đa 80 ký tự.";`
 - `lib/contactValidation.ts:29: if (!v) return "Bạn chưa nhập địa chỉ email.";`
 - `lib/contactValidation.ts:30: if (/\s/.test(v)) return "Email không được chứa khoảng trắng.";`
-- `lib/contactValidation.ts:32: return "Email thiếu ký tự “@”. Ví dụ đúng: ban@example.com";`
+- `lib/contactValidation.ts:32: return "Email thiếu ký tự “@”. Ví dụ đúng: johndoe@example.com";`
 - `lib/contactValidation.ts:33: if (v.split("@").length > 2) return "Email chỉ được chứa một ký tự “@”.";`
-- `lib/contactValidation.ts:35: if (!local) return "Email thiếu phần tên trước “@”. Ví dụ: ban@example.com";`
-- `lib/contactValidation.ts:36: if (!domain) return "Email thiếu tên miền sau “@”. Ví dụ: ban@example.com";`
+- `lib/contactValidation.ts:35: if (!local) return "Email thiếu phần tên trước “@”. Ví dụ: johndoe@example.com";`
+- `lib/contactValidation.ts:36: if (!domain) return "Email thiếu tên miền sau “@”. Ví dụ: johndoe@example.com";`
 - `lib/contactValidation.ts:38: return "Tên miền email thiếu phần đuôi, ví dụ “.com” hoặc “.vn”.";`
 - `lib/contactValidation.ts:40: return "Tên miền email không hợp lệ (dấu chấm đặt sai vị trí).";`
 - `lib/contactValidation.ts:41: if (v.length > 120) return "Email tối đa 120 ký tự.";`
@@ -417,7 +417,7 @@ Potential Vietnamese lines found: **787**
 - `components/recipes/RecipeDetail.tsx:91: *   "1/2 muỗng cà phê muối" -> "muối"`
 - `components/recipes/RecipeDetail.tsx:98: // Remove parenthetical quantity notes such as "(250g)" or "(2 quả)".`
 - `components/recipes/RecipeDetail.tsx:105: // Remove a quantity/unit prefix, e.g. "250 g bột mì" or "2 quả trứng".`
-- `components/recipes/RecipeDetail.tsx:107: String.raw`^\s*(?:(?:khoảng|tầm|chừng|about|approximately)\s*)?${quantity}\s*(?:${unit})?\s*`,`
+- `components/recipes/RecipeDetail.tsx:107: String.raw`^\s*(?:(?:khoảng|tầm|chừng|about|approximately)\s*)?${quantity}\s*(?:${unit})?\s\*`,`
 - `components/recipes/RecipeDetail.tsx:112: // Remove a quantity/unit suffix, e.g. "Bột mì 250g" or "Muối: 1/2 thìa cà phê".`
 - `components/recipes/RecipeDetail.tsx:114: String.raw`\s*(?:[:=,;\-–—]\s*)?(?:(?:khoảng|tầm|chừng|about|approximately)\s*)?${quantity}\s*${unit}\s*$`,`
 - `components/recipes/RecipeDetail.tsx:132: * Example: "Bột mì site:bachhoaxanh.com", not "Bột mì 250g ...".`

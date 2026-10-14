@@ -162,7 +162,7 @@ function AuthCard({ mode }: { mode: "login" | "register" }) {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="form-input"
-            placeholder="ban@example.com"
+            placeholder="johndoe@example.com"
           />
         </label>
         <label className="block">
