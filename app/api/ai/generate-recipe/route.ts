@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchTranscript } from "youtube-transcript";
 import { extractYouTubeId } from "@/lib/youtube";
+import { extractFacebookVideoUrl, isFacebookHost } from "@/lib/facebook";
 import { normalizeRecipeYield } from "@/lib/recipeYield";
 
 export const runtime = "nodejs";
@@ -891,6 +892,133 @@ async function getTranscript(videoId: string): Promise<TranscriptResult> {
   return fetchTranscriptViaPlayerClients(videoId);
 }
 
+// ---------------------------------------------------------------------------
+// Facebook Reel access
+// ---------------------------------------------------------------------------
+// Facebook has no public captions API. For public Reels/videos the page's Open Graph tags
+// (og:title / og:description) usually carry the uploader's caption, which is where many
+// recipe Reels put their ingredients and steps. Private or login-walled posts yield nothing;
+// in that case the user is asked to paste the recipe/dialogue instead.
+const MIN_FACEBOOK_CAPTION_CHARS = 40;
+
+type FacebookPage = {
+  title: string;
+  channel: string;
+  text: string;
+  imageUrl: string;
+};
+
+function readMetaTag(html: string, key: string): string {
+  const tags = html.match(/<meta\b[^>]*>/gi) ?? [];
+  for (const tag of tags) {
+    const name = /(?:property|name)\s*=\s*["']([^"']+)["']/i.exec(tag)?.[1];
+    if (name?.toLowerCase() !== key) continue;
+    const content = /content\s*=\s*"([^"]*)"|content\s*=\s*'([^']*)'/i.exec(
+      tag,
+    );
+    const value = content?.[1] ?? content?.[2];
+    if (value) {
+      return decodeCaptionEntities(value)
+        .replace(/[ \t]+/g, " ")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim();
+    }
+  }
+  return "";
+}
+
+async function getFacebookPage(
+  url: string,
+): Promise<{ page: FacebookPage | null; reason: string }> {
+  try {
+    const response = await fetch(url, {
+      headers: {
+        // Facebook serves Open Graph metadata to its own link-preview crawler.
+        "User-Agent":
+          "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+        Accept: "text/html",
+        "Accept-Language": "en-US,en;q=0.9",
+      },
+      redirect: "follow",
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!response.ok) {
+      console.error(
+        `[video-recipe] Facebook page failed: HTTP ${response.status}`,
+      );
+      return { page: null, reason: `facebook_http_${response.status}` };
+    }
+    // Share links (fb.watch, /share/r/...) redirect; never trust a redirect off Facebook.
+    if (!isFacebookHost(new URL(response.url).hostname)) {
+      return { page: null, reason: "facebook_redirected_away" };
+    }
+
+    const html = (await response.text()).slice(0, 1_500_000);
+    const title = (readMetaTag(html, "og:title") || "").slice(0, 300);
+    const description = (
+      readMetaTag(html, "og:description") || readMetaTag(html, "description")
+    ).slice(0, MAX_TRANSCRIPT_CHARS);
+    const imageUrl = readMetaTag(html, "og:image").slice(0, 2_000);
+
+    if (description.length < MIN_FACEBOOK_CAPTION_CHARS) {
+      return {
+        page: { title, channel: "", text: "", imageUrl },
+        reason: `facebook_caption_too_short_${description.length}_chars`,
+      };
+    }
+    return {
+      page: { title, channel: "", text: description, imageUrl },
+      reason: "ok",
+    };
+  } catch (error) {
+    console.error("[video-recipe] Facebook page error:", error);
+    return { page: null, reason: "facebook_network_error" };
+  }
+}
+
+const MAX_THUMBNAIL_BYTES = 2_000_000;
+
+/** Only Facebook's own CDN/hosts may be fetched as a thumbnail (no arbitrary remote URLs). */
+function isFacebookImageHost(hostname: string): boolean {
+  const host = hostname.toLowerCase();
+  return (
+    isFacebookHost(host) ||
+    host === "fbcdn.net" ||
+    host.endsWith(".fbcdn.net") ||
+    host.endsWith(".fbsbx.com")
+  );
+}
+
+/**
+ * Downloads the Reel's preview image on the server and returns it as a data URL.
+ * Facebook CDN links are signed, expire, and cannot be read from the browser (CORS),
+ * so the editor uploads this copy to Cloudinary when the recipe is saved.
+ * Best effort: returns null on any problem; the recipe is still generated.
+ */
+async function fetchThumbnailDataUrl(imageUrl: string): Promise<string | null> {
+  try {
+    const url = new URL(imageUrl);
+    if (url.protocol !== "https:" || !isFacebookImageHost(url.hostname)) {
+      return null;
+    }
+    const response = await fetch(url, {
+      headers: { Accept: "image/*" },
+      signal: AbortSignal.timeout(6_000),
+    });
+    if (!response.ok) return null;
+    if (!isFacebookImageHost(new URL(response.url).hostname)) return null;
+    const type =
+      response.headers.get("content-type")?.split(";")[0].trim() ?? "";
+    if (!/^image\/(jpeg|png|webp)$/i.test(type)) return null;
+    const bytes = Buffer.from(await response.arrayBuffer());
+    if (bytes.length === 0 || bytes.length > MAX_THUMBNAIL_BYTES) return null;
+    return `data:${type};base64,${bytes.toString("base64")}`;
+  } catch (error) {
+    console.error("[video-recipe] Facebook thumbnail error:", error);
+    return null;
+  }
+}
+
 export async function POST(request: NextRequest) {
   // This endpoint no longer depends on Firebase Admin or ID-token verification.
   // Generation is public; the per-IP limit below is only a best-effort safeguard.
@@ -910,17 +1038,29 @@ export async function POST(request: NextRequest) {
     return jsonError("The submitted data is invalid.", 400);
   }
 
-  const input = body as { youtubeUrl?: unknown; transcript?: unknown };
-  if (typeof input.youtubeUrl !== "string" || input.youtubeUrl.length > 2_000) {
-    return jsonError("Please enter a valid YouTube link.", 400);
-  }
-  const videoId = extractYouTubeId(input.youtubeUrl);
-  if (!videoId) {
+  // `youtubeUrl` is kept for backward compatibility; `videoUrl` accepts YouTube or Facebook links.
+  const input = body as {
+    videoUrl?: unknown;
+    youtubeUrl?: unknown;
+    transcript?: unknown;
+  };
+  const rawUrl =
+    typeof input.videoUrl === "string" ? input.videoUrl : input.youtubeUrl;
+  if (typeof rawUrl !== "string" || rawUrl.length > 2_000) {
     return jsonError(
-      "The YouTube link is not valid. Please use a youtube.com or youtu.be link.",
+      "Please enter a valid YouTube or Facebook Reel link.",
       400,
     );
   }
+  const videoId = extractYouTubeId(rawUrl);
+  const facebookUrl = videoId ? null : extractFacebookVideoUrl(rawUrl);
+  if (!videoId && !facebookUrl) {
+    return jsonError(
+      "The link is not valid. Please use a YouTube link (youtube.com, youtu.be) or a Facebook Reel/video link (facebook.com, fb.watch).",
+      400,
+    );
+  }
+  const platform: "youtube" | "facebook" = videoId ? "youtube" : "facebook";
 
   const suppliedTranscript =
     typeof input.transcript === "string" ? input.transcript.trim() : "";
@@ -938,7 +1078,32 @@ export async function POST(request: NextRequest) {
   let sourceKind: "user" | "transcript" | "description" = suppliedTranscript
     ? "user"
     : "transcript";
-  if (!transcriptText) {
+  let facebookPage: FacebookPage | null = null;
+  if (facebookUrl) {
+    const facebook = await getFacebookPage(facebookUrl);
+    facebookPage = facebook.page;
+    if (!transcriptText) {
+      if (facebook.page?.text) {
+        transcriptText = facebook.page.text;
+        transcriptLanguage = "Facebook post caption";
+        sourceKind = "description";
+      } else {
+        console.error(
+          "[video-recipe] Facebook caption unavailable:",
+          facebook.reason,
+        );
+        return NextResponse.json(
+          {
+            error: `Could not read a caption from this Facebook Reel (it may be private, require login, or have no text caption) (${facebook.reason}). Facebook does not provide subtitles to servers, so please paste the recipe or the spoken dialogue into the notes box; the system never invents video content.`,
+            code: "captions_unavailable",
+            reason: facebook.reason,
+          },
+          { status: 422 },
+        );
+      }
+    }
+  }
+  if (!transcriptText && videoId) {
     try {
       const transcript = await getTranscript(videoId);
       transcriptText = transcript.text;
@@ -968,7 +1133,12 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const metadata = await getVideoMetadata(videoId);
+  const metadata = videoId
+    ? await getVideoMetadata(videoId)
+    : {
+        title: facebookPage?.title ?? "",
+        channel: facebookPage?.channel ?? "",
+      };
 
   // Only count an attempt after input validation and transcript extraction succeed.
   // Failed YouTube-caption requests should not exhaust the user's generation quota.
@@ -983,7 +1153,7 @@ export async function POST(request: NextRequest) {
   // Step 1: make sure the video is actually about cooking before generating a recipe.
   try {
     const topic = await classifyVideoTopic({
-      videoId,
+      videoId: videoId ?? facebookUrl ?? "",
       metadata,
       transcriptLanguage,
       transcriptText,
@@ -1030,14 +1200,16 @@ export async function POST(request: NextRequest) {
     "Return only data that conforms to the JSON Schema, with no explanation outside the JSON.",
   ].join("\n");
   const userPrompt = [
-    `YouTube URL: https://www.youtube.com/watch?v=${videoId}`,
+    `${platform === "youtube" ? "YouTube" : "Facebook"} URL: ${
+      videoId ? `https://www.youtube.com/watch?v=${videoId}` : facebookUrl
+    }`,
     `Video title: ${metadata.title || "Title unavailable"}`,
     `Channel: ${metadata.channel || "Unknown"}`,
     `Source language: ${sourceLanguage.label}`,
     "Output language: English",
     translationNote,
     sourceKind === "description"
-      ? "Source type: the video DESCRIPTION written by the uploader, not the spoken transcript. Use only what the description actually states."
+      ? "Source type: the video DESCRIPTION / post caption written by the uploader, not the spoken transcript. Use only what the description actually states."
       : sourceKind === "user"
         ? "Source type: a transcript or notes pasted by the user."
         : "Source type: the video transcript (spoken words).",
@@ -1080,13 +1252,19 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  const thumbnailDataUrl = facebookPage?.imageUrl
+    ? await fetchThumbnailDataUrl(facebookPage.imageUrl)
+    : null;
+
   return NextResponse.json({
     recipe,
     source: {
+      thumbnailDataUrl,
       videoTitle: metadata.title,
       channel: metadata.channel,
       transcriptLanguage,
       outputLanguage: "en",
+      platform,
       translationApplied,
       sourceKind,
       transcriptProvidedByUser: Boolean(suppliedTranscript),

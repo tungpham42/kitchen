@@ -20,6 +20,7 @@ import Alert, { LoadingBlock } from "@/components/ui/Alert";
 import ThemedSelect from "@/components/ui/ThemedSelect";
 import RequireAuth from "@/components/auth/RequireAuth";
 import { extractYouTubeId, resolveYouTubeThumbnail } from "@/lib/youtube";
+import { extractFacebookVideoUrl } from "@/lib/facebook";
 import {
   EMPTY_NUTRITION_FORM,
   NUTRITION_FIELDS,
@@ -35,6 +36,13 @@ type GeneratedRecipe = Pick<
   recipeYield?: string;
   nutrition?: NonNullable<Recipe["nutrition"]>;
 };
+
+/** Turns a data: URL (from the server-fetched Reel thumbnail) into an uploadable File. */
+async function dataUrlToFile(dataUrl: string, name: string): Promise<File> {
+  const blob = await (await fetch(dataUrl)).blob();
+  const extension = blob.type.split("/")[1] || "jpg";
+  return new File([blob], `${name}.${extension}`, { type: blob.type });
+}
 
 function EditorForm({
   mode,
@@ -114,9 +122,9 @@ function EditorForm({
       setError("Please sign in before generating a recipe with AI.");
       return;
     }
-    if (!extractYouTubeId(youtubeUrl)) {
+    if (!extractYouTubeId(youtubeUrl) && !extractFacebookVideoUrl(youtubeUrl)) {
       setError(
-        "Please enter a valid YouTube video URL before generating content.",
+        "Please enter a valid YouTube or Facebook Reel URL before generating content.",
       );
       return;
     }
@@ -146,7 +154,7 @@ function EditorForm({
           Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
-          youtubeUrl: youtubeUrl.trim(),
+          videoUrl: youtubeUrl.trim(),
           transcript: transcriptInput.trim(),
         }),
       });
@@ -157,6 +165,8 @@ function EditorForm({
           videoTitle?: string;
           channel?: string;
           transcriptLanguage?: string;
+          platform?: "youtube" | "facebook";
+          thumbnailDataUrl?: string | null;
         };
       };
       if (!response.ok) {
@@ -184,8 +194,20 @@ function EditorForm({
       setIngredients(recipe.ingredients.join("\n"));
       setSteps(recipe.steps.join("\n"));
       setNutrition(nutritionToForm(recipe.nutrition));
+      // Facebook Reels have no public thumbnail URL, so the server sends the preview image.
+      // Only fill the dish photo when the user hasn't chosen or pasted their own.
+      const thumbnail = result.source?.thumbnailDataUrl;
+      if (
+        typeof thumbnail === "string" &&
+        thumbnail.startsWith("data:image/") &&
+        !imageFile &&
+        (!imageUrl.trim() || imageAuto)
+      ) {
+        setImageUrl(thumbnail);
+        setImageAuto(true);
+      }
       setAiMessage(
-        `Draft created${result.source?.videoTitle ? ` from video “${result.source.videoTitle}”` : " from the YouTube video"}. Please check the quantities, instructions, and nutrition estimates before saving.`,
+        `Draft created${result.source?.videoTitle ? ` from video “${result.source.videoTitle}”` : result.source?.platform === "facebook" ? " from the Facebook Reel" : " from the YouTube video"}. Please check the quantities, instructions, and nutrition estimates before saving.`,
       );
     } catch (err) {
       setError(
@@ -217,7 +239,13 @@ function EditorForm({
       })();
 
       let finalImage = imageUrl.trim();
-      if (imageFile) finalImage = await uploadImageToCloudinary(imageFile);
+      if (imageFile) {
+        finalImage = await uploadImageToCloudinary(imageFile);
+      } else if (finalImage.startsWith("data:image/")) {
+        finalImage = await uploadImageToCloudinary(
+          await dataUrlToFile(finalImage, "facebook-reel-thumbnail"),
+        );
+      }
       const payload: Partial<Recipe> = {
         title: title.trim(),
         description: description.trim(),
@@ -344,7 +372,8 @@ function EditorForm({
             </label>
             <div className="block">
               <label htmlFor="recipe-youtube-url" className="form-label">
-                <Icon name="youtube" size={15} /> Video YouTube
+                <Icon name="youtube" size={15} /> Video link (YouTube or
+                Facebook Reel)
               </label>
               <input
                 id="recipe-youtube-url"
@@ -358,11 +387,12 @@ function EditorForm({
                   }
                 }}
                 className="form-input"
-                placeholder="https://www.youtube.com/..."
+                placeholder="https://www.youtube.com/... or https://www.facebook.com/reel/..."
               />
               <p className="mt-2 text-xs leading-5 text-muted">
-                AI reads the video subtitles to draft the title, description,
-                servings, ingredients, instructions, and nutrition.
+                AI reads the YouTube subtitles (or the Facebook Reel caption) to
+                draft the title, description, servings, ingredients,
+                instructions, and nutrition.
               </p>
             </div>
             <div className="md:col-span-2 rounded-2xl border border-border bg-cream/40 p-4 sm:p-5">
@@ -399,7 +429,7 @@ function EditorForm({
                   onChange={(e) => setTranscriptInput(e.target.value)}
                   className="form-input min-h-24"
                   maxLength={60000}
-                  placeholder="Leave blank to let AI fetch the YouTube subtitles automatically. If the video has no subtitles or the server cannot read them, paste the dialogue/description here."
+                  placeholder="Leave blank to let AI fetch the YouTube subtitles or Facebook Reel caption automatically. If the video has no subtitles or the server cannot read them (Facebook Reels often need this), paste the dialogue/recipe text here."
                 />
                 <span className="mt-1 block text-xs text-muted">
                   {transcriptInput.length.toLocaleString("en-US")} / 60,000
@@ -494,7 +524,7 @@ function EditorForm({
                   className="file-input"
                 />
                 <input
-                  value={imageUrl}
+                  value={imageUrl.startsWith("data:") ? "" : imageUrl}
                   onChange={(e) => {
                     setImageUrl(e.target.value);
                     setImageAuto(false);
@@ -515,8 +545,8 @@ function EditorForm({
               )}
               <span className="mt-2 block text-xs text-muted">
                 {imageAuto
-                  ? "Using the YouTube video thumbnail. Choose another image or paste a URL to replace it."
-                  : "A new image will be uploaded to Cloudinary using an unsigned upload preset; a URL is kept as-is when you paste an existing image. If left blank and a YouTube link is present, the video thumbnail will be used automatically."}
+                  ? "Using the video thumbnail. Choose another image or paste a URL to replace it."
+                  : "A new image will be uploaded to Cloudinary using an unsigned upload preset; a URL is kept as-is when you paste an existing image. If left blank, the YouTube thumbnail is used automatically, and for a Facebook Reel the preview image is added when you generate with AI."}
               </span>
             </div>
           </div>
