@@ -19,7 +19,6 @@ export default function robots(): MetadataRoute.Robots {
         "/admin",
         "/profile",
         "/recipes/new",
-        "/sua-cong-thuc/",
         "/login",
         "/register",
       ],
